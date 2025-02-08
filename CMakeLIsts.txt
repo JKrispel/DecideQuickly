@@ -1,0 +1,61 @@
+cmake_minimum_required(VERSION 3.15)
+project(MyProject)
+
+# Enable C++17
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(PLATFORM "Desktop")
+
+# Add path to installed decisions library
+list(APPEND CMAKE_PREFIX_PATH "C:/Users/kozoh/source/repos/JKrispel/DecideQuickly/external/decisions")
+
+# Locate the decisions library
+find_package(decisions REQUIRED CONFIG)
+
+
+
+# Detect Emscripten (WebAssembly build)
+if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+    set(EMSCRIPTEN 1)
+endif()
+
+# Enable OpenMP for parallelization if supported
+find_package(OpenMP)
+if(OpenMP_CXX_FOUND)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+endif()
+
+# Add external dependencies (Raylib and RayGUI)
+add_subdirectory(external/raylib)
+add_subdirectory(external/raygui)
+
+include_directories(include)
+
+# Define source files
+file(GLOB_RECURSE SOURCES "src/*.cpp")
+file(GLOB_RECURSE HEADERS "src/*.h")
+
+# Define the executable
+add_executable(MyProject ${SOURCES} ${HEADERS})
+
+# Link Raylib and RayGUI
+set(RAYLIB_LIBS raylib)
+set(RAYGUI_LIBS raygui)
+
+target_link_libraries(MyProject PRIVATE ${RAYLIB_LIBS} ${RAYGUI_LIBS})
+# Link the decisions library to your project
+target_link_libraries(MyProject PRIVATE decisions::decisions)
+
+# WebAssembly (Emscripten) settings
+if(EMSCRIPTEN)
+    set(CMAKE_EXECUTABLE_SUFFIX ".html")
+    set_target_properties(MyProject PROPERTIES LINK_FLAGS "-s USE_WEBGL2=1 -s WASM=1 -s ALLOW_MEMORY_GROWTH=1")
+endif()
+
+# Include directories
+target_include_directories(MyProject PRIVATE
+    ${CMAKE_SOURCE_DIR}/include       # Include all project headers
+    ${CMAKE_SOURCE_DIR}/src           # Include source-specific headers
+    ${CMAKE_SOURCE_DIR}/external/raylib/src  # Include raylib headers (if needed)
+    ${CMAKE_SOURCE_DIR}/external/raygui     # Include raygui headers
+)
