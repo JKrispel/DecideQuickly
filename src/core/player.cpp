@@ -13,6 +13,10 @@ void Player::draw()
 
 void Player::update()
 {	
+	if (IsKeyPressed(KEY_TAB)) {
+		paused = true;
+	}
+
 	double now = GetTime();  // czas w sekundach
 	bool canRegen = (now - regenTime) > regenDelay;
 
@@ -43,4 +47,14 @@ void Player::dealDmg(int hpAmount)
 	Pawn::dealDmg(hpAmount); // funkcja klasy bazowej
 	double now = GetTime();  // czas w sekundach
 	regenTime = now;	// wydłużamy czas następnego leczenia
+}
+
+bool Player::callForPause() const
+{
+	return paused;
+}
+
+void Player::clearPauseCall()
+{
+	paused = false;
 }

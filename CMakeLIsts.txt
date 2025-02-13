@@ -27,7 +27,6 @@ endif()
 
 # Add external dependencies (Raylib and RayGUI)
 add_subdirectory(external/raylib)
-add_subdirectory(external/raygui)
 
 include_directories(include)
 
@@ -36,13 +35,12 @@ file(GLOB_RECURSE SOURCES "src/*.cpp")
 file(GLOB_RECURSE HEADERS "src/*.h")
 
 # Define the executable
-add_executable(MyProject ${SOURCES} ${HEADERS})
+add_executable(MyProject ${SOURCES} ${HEADERS} "src/core/targetted_camera.h" "src/core/targetted_camera.cpp")
 
 # Link Raylib and RayGUI
 set(RAYLIB_LIBS raylib)
-set(RAYGUI_LIBS raygui)
 
-target_link_libraries(MyProject PRIVATE ${RAYLIB_LIBS} ${RAYGUI_LIBS})
+target_link_libraries(MyProject PRIVATE ${RAYLIB_LIBS})
 # Link the decisions library to your project
 target_link_libraries(MyProject PRIVATE decisions::decisions)
 
@@ -57,5 +55,5 @@ target_include_directories(MyProject PRIVATE
     ${CMAKE_SOURCE_DIR}/include       # Include all project headers
     ${CMAKE_SOURCE_DIR}/src           # Include source-specific headers
     ${CMAKE_SOURCE_DIR}/external/raylib/src  # Include raylib headers (if needed)
-    ${CMAKE_SOURCE_DIR}/external/raygui     # Include raygui headers
+    ${CMAKE_SOURCE_DIR}/external/raygui/src     # Include raygui headers
 )

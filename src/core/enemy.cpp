@@ -28,8 +28,6 @@ Enemy::Enemy(Pawn& targetRef):
 
 void Enemy::draw()
 {
-	// DrawRectangle(position.x - 27.0f, position.y - 32.0f, 55.0f, 10.0f, BLACK);
-	// DrawRectangle(position.x - 25.0f, position.y - 30.0f, 50.0f, 5.0f, GREEN);
 	DrawCircle(position.x, position.y, radius, color);
 }
 
