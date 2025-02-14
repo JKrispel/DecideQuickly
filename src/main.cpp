@@ -50,8 +50,8 @@ int main(void)
 	int active = -1; // defaultowo brak wyboru w menu
 	float guiScale = 1.5f; // Scale factor (1.0 = normal size)
 
-	GuiSetStyle(DEFAULT, TEXT_SIZE, (int)(20 * guiScale)); // Default size is 10px
-	GuiSetStyle(DEFAULT, TEXT_SPACING, (int)(2 * guiScale)); // Adjust spacing
+	GuiSetStyle(DEFAULT, TEXT_SIZE, static_cast<int>(20 * guiScale)); // Default size is 10px
+	GuiSetStyle(DEFAULT, TEXT_SPACING, static_cast<int>(2 * guiScale)); // Adjust spacing
 
 	// TODO
 	// wybór w menu powinien czyścić stan gry, ładować na nowo potrzebne assety
@@ -64,46 +64,49 @@ int main(void)
 		case -1: {
 			// GuiListView aktualizuje `active` by pokazać, która opcja jest wybrana
 			GuiListView(Rectangle{ 0.f, static_cast<float>(GetScreenHeight()) / 16, static_cast<float>(GetScreenWidth()), static_cast<float>(GetScreenHeight()) },
-				"Drzewa Decyzyjne;Coming Soon",
+				"Follow - Drzewa Decyzyjne;Patrol - Drzewa Decyzyjne;Coming Soon",
 				&scroll, &active);
-			DrawRectangle(0.0f, 0.0f, static_cast<float>(GetScreenWidth()), static_cast<float>(GetScreenHeight()) / 16, DARKBLUE);	// kolejne elementy GUI
+			DrawRectangle(0.0f, 0.0f, static_cast<float>(GetScreenWidth()), static_cast<float>(GetScreenHeight()) / 16, SKYBLUE);	// kolejne elementy GUI
 			GuiLabel(Rectangle{ 3.0f, 3.0f, static_cast<float>(GetScreenWidth()), static_cast<float>(GetScreenHeight()) / 16 },
 				"Wybierz algorytm decyzyjny:");
 			std::cout << "Selected: " << active << std::endl;
 		} break;
 
 		case 0: {
-			// Updating
 			BeginMode2D(gameCamera.getCameraRef());
 			gameCamera.updateCamera();
 			npc.update();	// w środku logika AI
-			enemy.update();
 			player.update();
-			
-
-			// Drawing
-			ClearBackground(BLACK);
+			ClearBackground(BLACK); // renderowanie
 			DrawRectangleRec(map_bounds, DARKPURPLE);
 			player.draw();
 			npc.draw();
-			enemy.draw();
-		}break;
+		} break;
 		
 		case 1: {
-			// Updating
 			BeginMode2D(gameCamera.getCameraRef());
 			gameCamera.updateCamera();
 			player.update();
-
-			// Drawing
-			ClearBackground(BLACK);
+			enemy.update();
+			ClearBackground(BLACK);	// renderowanie
 			DrawRectangleRec(map_bounds, DARKPURPLE);
 			player.draw();
-		}break;
+			enemy.draw();
+
+		} break;
+
+		case 2: {
+			BeginMode2D(gameCamera.getCameraRef());
+			gameCamera.updateCamera();
+			player.update();
+			ClearBackground(BLACK); // renderowanie
+			DrawRectangleRec(map_bounds, DARKPURPLE);
+			player.draw();
+		} break;
 
 		default: {
 			std::cout << "Nie wybrano opcji" << std::endl;
-		}
+		} break;
 		}
 
 		if (player.callForPause()) {
