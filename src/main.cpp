@@ -6,7 +6,7 @@
 #include "core/npc.h"
 #include "core/enemy.h"
 #include "core/targetted_camera.h"
-#include <iostream>
+#include "utils/log_execution_time.h"
 	
 int main(void)
 {
@@ -56,6 +56,7 @@ int main(void)
     // TODO
     // wybór w menu powinien czyścić stan gry, ładować na nowo potrzebne assety
     while (!WindowShouldClose()) {
+        auto frame_start = std::chrono::high_resolution_clock::now();   // time logging
         BeginDrawing();
 
         switch (active) {
@@ -66,7 +67,6 @@ int main(void)
             DrawRectangle(0.0f, 0.0f, static_cast<float>(GetScreenWidth()), static_cast<float>(GetScreenHeight()) / 16, SKYBLUE);
             GuiLabel(Rectangle{ 3.0f, 3.0f, static_cast<float>(GetScreenWidth()), static_cast<float>(GetScreenHeight()) / 16 },
                 " Wybierz algorytm decyzyjny:");
-            std::cout << "Selected: " << active << std::endl;
         } break;
 
         case 0: {   // Follow - Drzewa decyzyjne
@@ -115,6 +115,12 @@ int main(void)
             player.clearPauseCall();
         }
         EndDrawing();
+
+        auto frame_end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> frame_time = frame_end - frame_start;
+
+        // Log execution time
+        log_execution_time(frame_time.count());
     }
     CloseWindow();
     return 0;
