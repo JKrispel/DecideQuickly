@@ -4,9 +4,10 @@
 
 void Run::execute()
 {
-	Vector2 directionVector = Vector2Normalize(Vector2Subtract(target.position, character.position));
+	Vector2 characterPosition = character.getPosition();
+	Vector2 directionVector = Vector2Normalize(Vector2Subtract(target.getPosition(), characterPosition));
 
-	character.position = Vector2Add(character.position, Vector2Scale(directionVector, character.speed));
+	character.setPosition(Vector2Add(characterPosition, Vector2Scale(directionVector, character.speed)));
 }
 
 Pawn& Run::getTargetRef()

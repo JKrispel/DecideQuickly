@@ -1,5 +1,5 @@
 #pragma once
-#include "core/enemy.h"
+#include "drzewa_decyzyjne/enemy_in_range/enemy.h"
 #include <raylib.h>
 #include <decisions/action_manager/action.h>
 

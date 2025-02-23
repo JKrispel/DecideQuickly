@@ -3,11 +3,13 @@
 #define RAYGUI_IMPLEMENTATION
 #include "raygui.h"
 #include "core/player.h"
-#include "core/npc.h"
-#include "core/enemy.h"
+#include "drzewa_decyzyjne/distance_decision/npc.h"
+#include "drzewa_decyzyjne/enemy_in_range/enemy.h"
 #include "core/targetted_camera.h"
 #include "utils/log_execution_time.h"
-	
+#include "maszyny_stanów/follow/npc_follow_sm.h"
+
+
 int main(void)
 {
     const int screen_width = 1920;
@@ -25,8 +27,7 @@ int main(void)
 
 
     Player player;
-    player.position.x = screen_width / 2;
-    player.position.y = screen_height / 2;
+    player.setPosition(Vector2{ screen_width / 2, screen_height / 2 });
     player.radius = 20;
     player.speed = 7;
     player.area = map_bounds;
@@ -35,17 +36,23 @@ int main(void)
     TargettedCamera gameCamera = TargettedCamera(player);
 
     // npc i enemy otrzymują jako target gracza
+    // Drzewa decyzyjne
     Npc npc = Npc(player);
-    npc.position.x = 50.f;
-    npc.position.y = 50.f;
+    npc.setPosition(Vector2{ 50.0f, 50.0f});
     npc.radius = 20;
     npc.speed = 4;
 
     Enemy enemy = Enemy(player);
-    enemy.position.x = 50.f;
-    enemy.position.y = 100.f;
+    enemy.setPosition(Vector2{ 50.0f, 100.0f });
     enemy.radius = 20;
     enemy.speed = 4;
+
+    // Maszyny Stanów
+    NpcFollowSM npcSM = NpcFollowSM(player);
+    npcSM.setPosition(Vector2{ 50.0f, 50.0f });
+    npcSM.radius = 20;
+    npcSM.speed = 4;
+
     // GUI config
     int scroll = 0;
     int active = -1; // defaultowo brak wyboru w menu
@@ -62,7 +69,7 @@ int main(void)
         switch (active) {
         case -1: {
             GuiListView(Rectangle{ 0.f, static_cast<float>(GetScreenHeight()) / 16, static_cast<float>(GetScreenWidth()), static_cast<float>(GetScreenHeight()) },
-                "Follow - Drzewa Decyzyjne;Patrol - Drzewa Decyzyjne;Coming Soon",
+                "Follow - Drzewo Decyzyjne;Patrol - Drzewo Decyzyjne;Follow - Maszyna Stanow; Coming Soon",
                 &scroll, &active);
             DrawRectangle(0.0f, 0.0f, static_cast<float>(GetScreenWidth()), static_cast<float>(GetScreenHeight()) / 16, SKYBLUE);
             GuiLabel(Rectangle{ 3.0f, 3.0f, static_cast<float>(GetScreenWidth()), static_cast<float>(GetScreenHeight()) / 16 },
@@ -94,8 +101,20 @@ int main(void)
             player.draw();
             enemy.draw();
         } break;
-
+        
         case 2: {   // nowy algorytm (WIP)  
+            BeginMode2D(gameCamera.getCameraRef());
+            gameCamera.updateCamera();
+            player.update();
+            npcSM.update();
+            // renderowanie
+            ClearBackground(BLACK);
+            DrawRectangleRec(map_bounds, DARKPURPLE);
+            player.draw();
+            npcSM.draw();
+        } break;
+
+        case 3: {   // nowy algorytm (WIP)  
             BeginMode2D(gameCamera.getCameraRef());
             gameCamera.updateCamera();
             player.update();

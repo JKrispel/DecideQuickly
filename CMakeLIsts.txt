@@ -35,7 +35,7 @@ file(GLOB_RECURSE SOURCES "src/*.cpp")
 file(GLOB_RECURSE HEADERS "src/*.h")
 
 # Define the executable
-add_executable(MyProject ${SOURCES} ${HEADERS} "src/core/targetted_camera.h" "src/core/targetted_camera.cpp")
+add_executable(MyProject ${SOURCES} ${HEADERS})
 
 # Link Raylib and RayGUI
 set(RAYLIB_LIBS raylib)

@@ -6,8 +6,9 @@ class Pawn {
 
 private:
 	int hp = 100;
-public:
 	Vector2 position{};
+
+public:
 	float speed{};
 	int radius{};
 	Rectangle area{};
@@ -17,4 +18,6 @@ public:
 	virtual void dealDmg(int hpAmount);
 	virtual void healPawn(int hpAmount);
 	int getHp();
+	Vector2 getPosition();
+	void setPosition(Vector2 newPosition);
 };

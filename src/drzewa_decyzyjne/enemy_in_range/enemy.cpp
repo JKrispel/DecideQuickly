@@ -28,6 +28,7 @@ Enemy::Enemy(Pawn& targetRef):
 
 void Enemy::draw()
 {
+	Vector2 position = this->getPosition();
 	DrawCircle(position.x, position.y, radius, color);
 }
 
@@ -36,7 +37,7 @@ void Enemy::update()
 	// dmg debounce
 	double now = GetTime();  // czas w sekundach
 	bool canDmg = (now - lastDmgTime) > dmgDelay;
-	bool collision = CheckCollisionCircles(targetRef.position, targetRef.radius, position, radius);
+	bool collision = CheckCollisionCircles(targetRef.getPosition(), targetRef.radius, this->getPosition(), radius);
 	if (collision  && canDmg) {
 		lastDmgTime = now;
 		targetRef.dealDmg(10);
@@ -52,15 +53,16 @@ void Enemy::update()
 
 void Enemy::updateDistance()
 {
-	distanceToTarget = Vector2Distance(position, targetRef.position);
+	Vector2 position = this->getPosition();
+	distanceToTarget = Vector2Distance(position, targetRef.getPosition());
 	distanceToPath = Vector2Distance(position, pathPtr->getPointAtIndex(pathPtr->getCurrentIndex()));
 }
 
 void Enemy::moveTo(Vector2 destination)
 {
+	Vector2 position = this->getPosition();
 	Vector2 directionVector = Vector2Normalize(Vector2Subtract(destination, position));
-
-	position = Vector2Add(position, Vector2Scale(directionVector, speed));
+	setPosition(Vector2Add(position, Vector2Scale(directionVector, speed)));
 }
 
 Pawn& Enemy::getTargetRef()

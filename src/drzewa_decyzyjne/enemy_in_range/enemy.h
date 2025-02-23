@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "pawn.h"
+#include "core/pawn.h"
 #include <raylib.h>
 #include <unordered_map>
 #include <decisions/action_manager/action.h>

@@ -2,7 +2,7 @@
 #include <memory>
 #include <raylib.h>
 #include <raymath.h>
-#include "core/enemy.h"
+#include "drzewa_decyzyjne/enemy_in_range/enemy.h"
 #include "drzewa_decyzyjne/enemy_in_range/distance_from_path.h"
 #include "drzewa_decyzyjne/enemy_in_range/on_path.h"
     

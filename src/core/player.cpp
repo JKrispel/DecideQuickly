@@ -5,6 +5,8 @@
 
 void Player::draw()
 {
+	Vector2 position = getPosition();
+
 	DrawRectangle(position.x - 27.0f, position.y - 32.0f, 55.0f, 10.0f, BLACK);
 	DrawRectangle(position.x - 25.0f, position.y - 30.0f, 50.0f, 5.0f, RED);
 	DrawRectangle(position.x - 25.0f, position.y - 30.0f, 50.0f * (this->getHp()) / 100, 5.0f, GREEN);
@@ -25,7 +27,8 @@ void Player::update()
 		this->healPawn(regenAmount);
 	}
 	Vector2 direction = Vector2Zero();
-	
+	Vector2 position = getPosition();
+
 	if (IsKeyDown(KEY_W) && position.y >= area.y + radius) {
 		direction.y -= speed;
 	}
@@ -39,7 +42,7 @@ void Player::update()
 		direction.x += speed;
 	}
 
-	position = Vector2Add(position, Vector2Scale(Vector2Normalize(direction), speed));
+	setPosition(Vector2Add(position, Vector2Scale(Vector2Normalize(direction), speed)));
 }
 
 void Player::dealDmg(int hpAmount)

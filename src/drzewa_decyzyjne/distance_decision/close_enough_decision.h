@@ -13,5 +13,4 @@ public:
 		distanceToTarget(distanceToTarget) {};
 
 	std::unique_ptr<DecisionTreeNode> getBranch();
-	void setDistanceToTarget(float newDistanceToTarget);
 };

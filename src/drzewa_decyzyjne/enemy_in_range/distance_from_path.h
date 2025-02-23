@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include <decisions/decision_tree/decision.h>
-#include "core/enemy.h"
+#include "drzewa_decyzyjne/enemy_in_range/enemy.h"
 
 class DistanceFromPath : public Decision {
 

@@ -3,7 +3,6 @@
 #include "utils/npc_action.h"
 #include "drzewa_decyzyjne/distance_decision/close_enough_decision.h"
 
-#include <iostream> // debug
 
 std::unique_ptr<DecisionTreeNode> DistanceDecision::getBranch()
 {
