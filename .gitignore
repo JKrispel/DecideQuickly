@@ -1,2 +1,4 @@
 out
 .vs
+/external/decisions/include/gmock
+/external/decisions/include/gtest

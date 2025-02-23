@@ -86,7 +86,6 @@ float Enemy::getPathDistance()
 Vector2 Enemy::getPatrolPoint()
 {
 	Vector2 point = pathPtr->getPointAtIndex(pathPtr->getCurrentIndex());
-	//std::cout << "x: " << point.x <<", y: "<< point.y << std::endl;
 	return point;
 }
 
