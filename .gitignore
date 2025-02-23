@@ -2,3 +2,8 @@ out
 .vs
 /external/decisions/include/gmock
 /external/decisions/include/gtest
+/external/decisions/lib/cmake/GTest
+/external/decisions/lib/gmock*
+/external/decisions/lib/gtest*
+/external/decisions/lib/pkgconfig/gmock*
+/external/decisions/lib/pkgconfig/gtest*
