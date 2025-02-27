@@ -11,7 +11,6 @@
 class Npc : public Pawn {
 
 public:
-
 	Pawn& target;
 	DistanceDecision rootNode = DistanceDecision(Vector2Distance(this->getPosition(), target.getPosition()));
 	// mapa możliwych Akcji, unique_ptr dla polimorfizmu

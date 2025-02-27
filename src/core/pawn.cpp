@@ -1,4 +1,4 @@
-#include "pawn.h"
+﻿#include "pawn.h"
 
 void Pawn::dealDmg(int hpAmount)
 {
@@ -23,4 +23,20 @@ Vector2 Pawn::getPosition()
 void Pawn::setPosition(Vector2 newPosition)
 {
 	position = newPosition;
+}
+
+void Pawn::updateFinished()
+{
+	{
+		std::lock_guard<std::mutex> lock(pawnMutex);
+		newUpdate = true;
+	}
+	updateCondition.notify_one();
+}
+
+void Pawn::drawAfterUpdate()
+{
+	std::unique_lock<std::mutex> lock(pawnMutex);
+	updateCondition.wait(lock, [this] { return newUpdate; });  // renderuje dopiero jak zajdzie zmiana
+	newUpdate = false;
 }

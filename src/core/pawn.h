@@ -1,5 +1,6 @@
-#pragma once
+﻿#pragma once
 #include <raylib.h>
+#include <condition_variable>
 
 // virtual class
 class Pawn {
@@ -7,6 +8,10 @@ class Pawn {
 private:
 	int hp = 100;
 	Vector2 position{};
+
+	std::mutex pawnMutex;
+	bool newUpdate = false;
+	std::condition_variable updateCondition;
 
 public:
 	float speed{};
@@ -20,4 +25,8 @@ public:
 	int getHp();
 	Vector2 getPosition();
 	void setPosition(Vector2 newPosition);
+
+protected:	// funkcje synchronizujące obliczenia i render
+	void updateFinished();
+	void drawAfterUpdate();
 };

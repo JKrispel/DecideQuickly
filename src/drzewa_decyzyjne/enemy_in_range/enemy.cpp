@@ -28,6 +28,8 @@ Enemy::Enemy(Pawn& targetRef):
 
 void Enemy::draw()
 {
+	drawAfterUpdate();
+
 	Vector2 position = this->getPosition();
 	DrawCircle(position.x, position.y, radius, color);
 }
@@ -49,6 +51,8 @@ void Enemy::update()
 	auto* finalDecision = dynamic_cast<FinalDecision<NpcAction>*>(decision.get());
 	NpcAction actionType = finalDecision->getActionType();
 	npcActions[actionType]->execute();
+
+	updateFinished();
 }
 
 void Enemy::updateDistance()

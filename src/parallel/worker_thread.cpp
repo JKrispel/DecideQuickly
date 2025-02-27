@@ -1,5 +1,5 @@
 ﻿#include "parallel/worker_thread.h"
-
+#include <iostream>
 WorkerThread::WorkerThread() : running(true) {
     worker = std::thread(&WorkerThread::processTasks, this);
 }

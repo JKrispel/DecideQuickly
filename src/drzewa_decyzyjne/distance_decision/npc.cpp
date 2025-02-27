@@ -1,4 +1,4 @@
-﻿#include "npc.h"
+﻿#include "drzewa_decyzyjne/distance_decision/npc.h"
 #include <decisions/decision_tree/final_decision.h>
 #include "actions/run.h"
 #include "actions/walk.h"
@@ -16,6 +16,8 @@ Npc::Npc(Pawn& target):
 
 void Npc::draw()
 {
+	drawAfterUpdate();
+
 	Vector2 position = getPosition();
 	DrawRectangle(position.x - 27.0f, position.y - 32.0f, 55.0f, 10.0f, BLACK);
 	DrawRectangle(position.x - 25.0f, position.y - 30.0f, 50.0f, 5.0f, GREEN);
@@ -32,5 +34,6 @@ void Npc::update()
 	auto* finalDecision = dynamic_cast<FinalDecision<NpcAction>*>(decision.get());
 	NpcAction actionType = finalDecision->getActionType();
 	npcActions[actionType]->execute();
+
+	updateFinished();
 }
-// Pawn position bez settera!

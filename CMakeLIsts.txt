@@ -12,8 +12,6 @@ list(APPEND CMAKE_PREFIX_PATH "C:/Users/kozoh/source/repos/JKrispel/DecideQuickl
 # Locate the decisions library
 find_package(decisions REQUIRED CONFIG)
 
-
-
 # Detect Emscripten (WebAssembly build)
 if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     set(EMSCRIPTEN 1)
@@ -57,3 +55,10 @@ target_include_directories(MyProject PRIVATE
     ${CMAKE_SOURCE_DIR}/external/raylib/src  # Include raylib headers (if needed)
     ${CMAKE_SOURCE_DIR}/external/raygui/src     # Include raygui headers
 )
+
+# Copy resources from DecideQuickly/resources/ to the build directory
+add_custom_target(CopyResources ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/../DecideQuickly/resources ${CMAKE_BINARY_DIR}/resources
+)
+add_dependencies(MyProject CopyResources)  # Ensure it runs before building
