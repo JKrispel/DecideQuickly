@@ -11,11 +11,11 @@
 #include "maszyny_stanów/follow/npc_follow_sm.h"
 #include "parallel/worker_thread.h"
 #include "render/floor.h"
+#include "core/config.h"
 
 int main(void)
 {
-    const int screen_width = 256*10;
-    const int screen_height = 256*10;
+
 
 
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
@@ -23,30 +23,25 @@ int main(void)
     SetTargetFPS(60);
 
 
-    Player player;
-    player.setPosition(Vector2{ screen_width / 2, screen_height / 2 });
-    player.radius = 20;
-    player.speed = 7;
-    //player.area = map_bounds;
-    player.area = Rectangle{ 10, 10, screen_width - 20, screen_height - 20 };
-    // kamera gracza
-    TargettedCamera gameCamera = TargettedCamera(player);
+    Player player; 
+    TargettedCamera gameCamera = TargettedCamera(player);   // kamera gracza
+
 
     // npc i enemy otrzymują jako target gracza
     // Drzewa decyzyjne
     Npc npc = Npc(player);
-    npc.setPosition(Vector2{ 50.0f, 50.0f});
+    npc.setPosition(50.0f, 50.0f);
     npc.radius = 20;
     npc.speed = 4;
 
     Enemy enemy = Enemy(player);
-    enemy.setPosition(Vector2{ 50.0f, 100.0f });
+    enemy.setPosition(50.0f, 100.0f);
     enemy.radius = 20;
     enemy.speed = 4;
 
     // Maszyny Stanów
     NpcFollowSM npcSM = NpcFollowSM(player);
-    npcSM.setPosition(Vector2{ 50.0f, 50.0f });
+    npcSM.setPosition(50.0f, 50.0f);
     npcSM.radius = 20;
     npcSM.speed = 4;
 
@@ -61,7 +56,7 @@ int main(void)
     // TODO
     // wybór w menu powinien czyścić stan gry, ładować na nowo potrzebne assety (structs)
     std::set<int> initializedLevels;
-    Floor floor("resources/floor/256_Tiles Square 02 Grass.png", screen_width, screen_height);
+    Floor floor("resources/floor/floor_tiles.png", screen_width, screen_height);
     
     while (!WindowShouldClose()) {
         BeginDrawing();

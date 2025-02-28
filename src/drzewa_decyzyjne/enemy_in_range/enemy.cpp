@@ -66,7 +66,8 @@ void Enemy::moveTo(Vector2 destination)
 {
 	Vector2 position = this->getPosition();
 	Vector2 directionVector = Vector2Normalize(Vector2Subtract(destination, position));
-	setPosition(Vector2Add(position, Vector2Scale(directionVector, speed)));
+	position = Vector2Add(position, Vector2Scale(directionVector, speed));
+	setPosition(position.x, position.y);
 }
 
 Pawn& Enemy::getTargetRef()

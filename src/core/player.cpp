@@ -2,15 +2,26 @@
 #include <raylib.h>
 #include <raymath.h>
 #include <iostream>
+#include <cmath>
+
+Player::Player() : Pawn() {
+	setPosition(screen_width / 2, screen_height / 2);
+	radius = player_hitbox_radius;
+	speed = 7.0f;
+	upperLimit = bounds.y + radius;
+	bottomLimit = bounds.y + bounds.height - radius;
+	leftLimit = bounds.x + radius;
+	rightLimit = bounds.x + bounds.width - radius;
+	animation = std::make_unique<PlayerAnimation>();
+};
 
 void Player::draw()
 {
 	Vector2 position = getPosition();
-
-	DrawRectangle(position.x - 27.0f, position.y - 32.0f, 55.0f, 10.0f, BLACK);
-	DrawRectangle(position.x - 25.0f, position.y - 30.0f, 50.0f, 5.0f, RED);
-	DrawRectangle(position.x - 25.0f, position.y - 30.0f, 50.0f * (this->getHp()) / 100, 5.0f, GREEN);
-	DrawCircle(position.x, position.y, radius, WHITE);
+	DrawRectangle(position.x - 28.0f, position.y - (2.2 * player_hitbox_radius + 2.0f), 55.0f, 10.0f, BLACK);
+	DrawRectangle(position.x - 26.0f, position.y - (2.2 * player_hitbox_radius), 51.0f, 5.0f, RED);
+	DrawRectangle(position.x - 26.0f, position.y - (2.2 * player_hitbox_radius), 51.0f * (this->getHp()) / 100, 5.0f, GREEN);
+	animation->animate(position);
 }
 
 void Player::update()
@@ -29,20 +40,22 @@ void Player::update()
 	Vector2 direction = Vector2Zero();
 	Vector2 position = getPosition();
 
-	if (IsKeyDown(KEY_W) && position.y >= area.y + radius) {
-		direction.y -= speed;
+	if (IsKeyDown(KEY_W) && position.y >= upperLimit) {
+		direction.y -= 1;
 	}
-	if (IsKeyDown(KEY_S) && position.y <= area.y + area.height - radius) {
-		direction.y += speed;
+	if (IsKeyDown(KEY_S) && position.y <= bottomLimit) {
+		direction.y += 1;
 	}
-	if (IsKeyDown(KEY_A) && position.x >= area.x + radius) {
-		direction.x -= speed;
+	if (IsKeyDown(KEY_A) && position.x >= leftLimit) {
+		direction.x -= 1;
 	}
-	if (IsKeyDown(KEY_D) && position.x <= area.x + area.width - radius) {
-		direction.x += speed;
+	if (IsKeyDown(KEY_D) && position.x <= rightLimit) {
+		direction.x += 1;
 	}
-
-	setPosition(Vector2Add(position, Vector2Scale(Vector2Normalize(direction), speed)));
+	//animation->updateRotation(atan2(-direction.y, direction.x) * (180.0f / PI));
+	animation->updateDirection(direction);
+	position = Vector2Add(position, Vector2Scale(Vector2Normalize(direction), speed));
+	setPosition(position.x, position.y);
 }
 
 void Player::dealDmg(int hpAmount)

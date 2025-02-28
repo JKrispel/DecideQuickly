@@ -1,4 +1,4 @@
-﻿#include "pawn.h"
+﻿#include "core/pawn.h"
 
 void Pawn::dealDmg(int hpAmount)
 {
@@ -20,9 +20,9 @@ Vector2 Pawn::getPosition()
 	return position;
 }
 
-void Pawn::setPosition(Vector2 newPosition)
+void Pawn::setPosition(float newX, float newY)
 {
-	position = newPosition;
+	position = Vector2{ newX, newY };
 }
 
 void Pawn::updateFinished()

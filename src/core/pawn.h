@@ -14,19 +14,17 @@ private:
 	std::condition_variable updateCondition;
 
 public:
-	float speed{};
-	int radius{};
-	Rectangle area{};
-
+	float speed{};	// przenieść do
+	float radius{};	// sekcji prywatnej
 	virtual void draw() = 0;
 	virtual void update() = 0;
 	virtual void dealDmg(int hpAmount);
 	virtual void healPawn(int hpAmount);
 	int getHp();
 	Vector2 getPosition();
-	void setPosition(Vector2 newPosition);
+	void setPosition(float newX, float newY);
 
-protected:	// funkcje synchronizujące obliczenia i render
+protected:	// funkcje synchronizujące obliczenia AI oraz render
 	void updateFinished();
 	void drawAfterUpdate();
 };
