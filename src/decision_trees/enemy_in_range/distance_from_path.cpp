@@ -4,22 +4,14 @@
 
 std::unique_ptr<DecisionTreeNode> DistanceFromPath::getBranch()
 {
+
     double now = GetTime();  // czas w sekundach
 
-
-    // debounce
-    if (now - npcRef.lostAggroTime < npcRef.aggroDelay) {
-        //std::cout << "Aggro on CD" << std::endl;
-        return std::make_unique<FinalDecision<NpcAction>>(NpcAction::PATROL);
-    }
-
     if (npcRef.getPathRef().distanceToPath() > distanceThreshold) {
-        //std::cout << "Patrol" << std::endl;
         npcRef.lostAggroTime = now;
         return std::make_unique<FinalDecision<NpcAction>>(NpcAction::PATROL);
     }
     else {
-        //std::cout << "Chase" << std::endl;
         return std::make_unique<FinalDecision<NpcAction>>(NpcAction::CHASE);
     }
 }

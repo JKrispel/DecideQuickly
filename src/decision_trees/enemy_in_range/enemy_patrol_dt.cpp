@@ -6,10 +6,10 @@
 #include "actions/patrol.h"
 
 EnemyPatrolDT::EnemyPatrolDT(Pawn& targetRef):
-	Npc(50.0f, 100.0f, 7.0f, 20.0f, targetRef),
+	Npc(50.0f, 100.0f, 6.0f, 20.0f, targetRef),
 	rootNode(std::make_unique<EnemyInRange>(*this))
 {	
-	auto pathPtr = getPathRef();
+	Path& pathPtr = getPathRef();
 	// patrolowana ścieżka:
 	pathPtr.addPoint(50.0f, 100.0f);
 	pathPtr.addPoint(50.0f, 400.0f);
