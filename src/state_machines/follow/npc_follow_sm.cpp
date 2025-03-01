@@ -3,11 +3,12 @@
 #include "actions/run.h"
 #include "actions/walk.h"
 #include "actions/stop.h"
-#include "maszyny_stanów/follow/transition_far_enough.h"
-#include "maszyny_stanów/follow/transition_close_enough.h"
+#include "state_machines/follow/transition_far_enough.h"
+#include "state_machines/follow/transition_close_enough.h"
 
 
 NpcFollowSM::NpcFollowSM(Pawn& target) : 
+	Pawn(50.0f, 50.0f, 4.0f, 20.0f),
 	target(target)
 {
 	// inicjalizacja unordered_map
@@ -52,5 +53,5 @@ void NpcFollowSM::draw()
 	Vector2 position = getPosition();
 	DrawRectangle(position.x - 27.0f, position.y - 32.0f, 55.0f, 10.0f, BLACK);
 	DrawRectangle(position.x - 25.0f, position.y - 30.0f, 50.0f, 5.0f, GREEN);
-	DrawCircle(position.x, position.y, radius, BLUE);
+	DrawCircle(position.x, position.y, getHitboxRadius(), BLUE);
 }

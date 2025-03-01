@@ -1,16 +1,16 @@
 #pragma once
 #include <decisions/decision_tree/decision.h>
-#include "drzewa_decyzyjne/enemy_in_range/enemy.h"
+#include "core/npc.h"
 #include "utils/path.h"
 
 class OnPath : public Decision {
 
 private:
-	Enemy& enemyRef;
+	Npc& npcRef;
 
 public:
-	OnPath(Enemy& enemyRef) :
-		enemyRef(enemyRef) {};
+	OnPath(Npc& npcRef) :
+		npcRef(npcRef) {};
 
 	std::unique_ptr<DecisionTreeNode> getBranch();
 };

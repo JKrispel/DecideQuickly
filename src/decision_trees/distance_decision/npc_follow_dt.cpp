@@ -1,11 +1,12 @@
-﻿#include "drzewa_decyzyjne/distance_decision/npc.h"
-#include <decisions/decision_tree/final_decision.h>
+﻿#include "decision_trees/distance_decision/npc_follow_dt.h"
+#include "decisions/decision_tree/final_decision.h"
 #include "actions/run.h"
 #include "actions/walk.h"
 #include "actions/stop.h"
 
 
-Npc::Npc(Pawn& target):
+NpcFollowDT::NpcFollowDT(Pawn& target):
+	Pawn(50.0f, 50.0f, 4.0f, 20.0f),
 	target(target)
 {
 	// inicjalizacja unordered_map
@@ -14,17 +15,17 @@ Npc::Npc(Pawn& target):
 	npcActions[NpcAction::STOP] = std::make_unique<Stop>();
 }
 
-void Npc::draw()
+void NpcFollowDT::draw()
 {
 	drawAfterUpdate();
 
 	Vector2 position = getPosition();
 	DrawRectangle(position.x - 27.0f, position.y - 32.0f, 55.0f, 10.0f, BLACK);
 	DrawRectangle(position.x - 25.0f, position.y - 30.0f, 50.0f, 5.0f, GREEN);
-	DrawCircle(position.x, position.y, radius, BLUE);
+	DrawCircle(position.x, position.y, getHitboxRadius(), BLUE);
 }
 
-void Npc::update()
+void NpcFollowDT::update()
 {
 	// aktualizuj odgległość
 	rootNode.setDistanceToTarget(Vector2Distance(getPosition(), target.getPosition()));

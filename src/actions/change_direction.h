@@ -1,14 +1,14 @@
 #pragma once
-#include "drzewa_decyzyjne/enemy_in_range/enemy.h"
-#include <raylib.h>
-#include <decisions/action_manager/action.h>
+#include "raylib.h"
+#include "decisions/action_manager/action.h"
+#include "core/npc.h"
 
 class ChangeDirection : public Action {
 private:
-	Enemy& enemyRef;
+	Npc& npcRef;
 
 public:
-	ChangeDirection(Enemy& enemyRef) : Action(1.0f), enemyRef(enemyRef) {}
+	ChangeDirection(Npc& npcRef) : Action(1.0f), npcRef(npcRef) {}
 
 	void execute() override;
 };

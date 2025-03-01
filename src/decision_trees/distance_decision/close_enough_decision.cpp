@@ -1,6 +1,6 @@
-#include "drzewa_decyzyjne/distance_decision/close_enough_decision.h"
+#include "decision_trees/distance_decision/close_enough_decision.h"
 #include <memory>
-#include <decisions/decision_tree/final_decision.h>
+#include "decisions/decision_tree/final_decision.h"
 #include "utils/npc_action.h"
 
 

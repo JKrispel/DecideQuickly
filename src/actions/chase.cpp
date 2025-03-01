@@ -3,6 +3,6 @@
 void Chase::execute()
 {
 
-	enemyRef.setColor(RED);
-	enemyRef.moveTo(enemyRef.getTargetRef().getPosition());
+	npcRef.setColor(RED);
+	npcRef.moveTo(npcRef.getTargetRef().getPosition());
 }

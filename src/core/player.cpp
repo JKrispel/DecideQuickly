@@ -4,16 +4,13 @@
 #include <iostream>
 #include <cmath>
 
-Player::Player() : Pawn() {
-	setPosition(screen_width / 2, screen_height / 2);
-	radius = player_hitbox_radius;
-	speed = 7.0f;
-	upperLimit = bounds.y + radius;
-	bottomLimit = bounds.y + bounds.height - radius;
-	leftLimit = bounds.x + radius;
-	rightLimit = bounds.x + bounds.width - radius;
-	animation = std::make_unique<PlayerAnimation>();
-};
+Player::Player()
+	: Pawn(screen_width / 2, screen_height / 2, 7.0f, player_hitbox_radius),
+	upperLimit(bounds.y + player_hitbox_radius),
+	bottomLimit(bounds.y + bounds.height - player_hitbox_radius),
+	leftLimit(bounds.x + player_hitbox_radius),
+	rightLimit(bounds.x + bounds.width - player_hitbox_radius),
+	animation(std::make_unique<PlayerAnimation>()) {}
 
 void Player::draw()
 {
@@ -52,9 +49,8 @@ void Player::update()
 	if (IsKeyDown(KEY_D) && position.x <= rightLimit) {
 		direction.x += 1;
 	}
-	//animation->updateRotation(atan2(-direction.y, direction.x) * (180.0f / PI));
 	animation->updateDirection(direction);
-	position = Vector2Add(position, Vector2Scale(Vector2Normalize(direction), speed));
+	position = Vector2Add(position, Vector2Scale(Vector2Normalize(direction), getSpeed()));
 	setPosition(position.x, position.y);
 }
 

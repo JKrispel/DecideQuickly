@@ -4,11 +4,11 @@
 #define RAYGUI_IMPLEMENTATION
 #include "raygui.h"
 #include "core/player.h"
-#include "drzewa_decyzyjne/distance_decision/npc.h"
-#include "drzewa_decyzyjne/enemy_in_range/enemy.h"
+#include "decision_trees/distance_decision/npc_follow_dt.h"
+#include "decision_trees/enemy_in_range/enemy_patrol_dt.h"
 #include "core/targetted_camera.h"
 #include "utils/log_execution_time.h"
-#include "maszyny_stanów/follow/npc_follow_sm.h"
+#include "state_machines/follow/npc_follow_sm.h"
 #include "parallel/worker_thread.h"
 #include "render/floor.h"
 #include "core/config.h"
@@ -26,24 +26,13 @@ int main(void)
     Player player; 
     TargettedCamera gameCamera = TargettedCamera(player);   // kamera gracza
 
-
     // npc i enemy otrzymują jako target gracza
     // Drzewa decyzyjne
-    Npc npc = Npc(player);
-    npc.setPosition(50.0f, 50.0f);
-    npc.radius = 20;
-    npc.speed = 4;
-
-    Enemy enemy = Enemy(player);
-    enemy.setPosition(50.0f, 100.0f);
-    enemy.radius = 20;
-    enemy.speed = 4;
+    auto npcDTptr = std::make_unique<NpcFollowDT>(player);
+    auto enemyDTptr = std::make_unique<EnemyPatrolDT>(player);
 
     // Maszyny Stanów
-    NpcFollowSM npcSM = NpcFollowSM(player);
-    npcSM.setPosition(50.0f, 50.0f);
-    npcSM.radius = 20;
-    npcSM.speed = 4;
+    auto npcSMptr = std::make_unique<NpcFollowSM>(player);
 
     // GUI config
     int scroll = 0;
@@ -78,7 +67,7 @@ int main(void)
                 // TODO załaduj assety
                 initializedLevels.insert(0); // oznacz jako załadowany
             }
-            aiWorker.addTask([&]() { npc.update(); });  // here the main thread needs to finish queueing
+            aiWorker.addTask([&]() { npcDTptr->update(); });  // here the main thread needs to finish queueing
             BeginMode2D(gameCamera.getCameraRef());
             gameCamera.updateCamera();
             player.update();
@@ -86,7 +75,7 @@ int main(void)
             ClearBackground(BLACK);
             floor.draw();
             player.draw();
-            npc.draw(); // in order to get to this point
+            npcDTptr->draw(); // in order to get to this point
         } break;
 
         case 1: {   // Patrol - Drzewo Decyzyjne
@@ -96,7 +85,7 @@ int main(void)
                 // TODO załaduj assety
                 initializedLevels.insert(1);
             }
-            aiWorker.addTask([&]() { enemy.update(); });
+            aiWorker.addTask([&]() { enemyDTptr->update(); });
             BeginMode2D(gameCamera.getCameraRef());
             gameCamera.updateCamera();
             player.update();
@@ -104,7 +93,7 @@ int main(void)
             ClearBackground(BLACK);
             floor.draw();
             player.draw();
-            enemy.draw();
+            enemyDTptr->draw();
         } break;
         
         case 2: {   // Follow - Maszyna Stanów
@@ -114,7 +103,7 @@ int main(void)
                 // TODO załaduj assety
                 initializedLevels.insert(1);
             }
-            aiWorker.addTask([&]() { npcSM.update(); });
+            aiWorker.addTask([&]() { npcSMptr->update(); });
             BeginMode2D(gameCamera.getCameraRef());
             gameCamera.updateCamera();
             player.update();
@@ -122,7 +111,7 @@ int main(void)
             ClearBackground(BLACK);
             floor.draw();
             player.draw();
-            npcSM.draw();
+            npcSMptr->draw();
         } break;
 
         case 3: {   // nowy algorytm (WIP)  

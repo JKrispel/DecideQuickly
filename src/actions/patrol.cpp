@@ -2,6 +2,6 @@
 
 void Patrol::execute()
 {
-	enemyRef.setColor(ORANGE);
-	enemyRef.moveTo(enemyRef.getPatrolPoint());
+	npcRef.setColor(ORANGE);
+	npcRef.moveTo(npcRef.getPatrolPoint());
 }

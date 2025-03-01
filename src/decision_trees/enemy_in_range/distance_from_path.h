@@ -1,16 +1,16 @@
 ﻿#pragma once
-#include <decisions/decision_tree/decision.h>
-#include "drzewa_decyzyjne/enemy_in_range/enemy.h"
+#include "decisions/decision_tree/decision.h"
+#include "core/npc.h"
 
 class DistanceFromPath : public Decision {
 
 private:
 	float distanceThreshold = 400.0f;	// próg oddalenia się od ścieżki, hardcoded by design
-	Enemy& enemyRef;
+	Npc& npcRef;
 
 public:
-	DistanceFromPath(Enemy& enemyRef) :
-		enemyRef(enemyRef) {};
+	DistanceFromPath(Npc& enemyRef) :
+		npcRef(enemyRef) {};
 
 	std::unique_ptr<DecisionTreeNode> getBranch();
 };

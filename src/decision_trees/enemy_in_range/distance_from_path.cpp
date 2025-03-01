@@ -1,5 +1,5 @@
-#include "drzewa_decyzyjne/enemy_in_range/distance_from_path.h"
-#include <decisions/decision_tree/final_decision.h>
+#include "decision_trees/enemy_in_range/distance_from_path.h"
+#include "decisions/decision_tree/final_decision.h"
 #include "utils/npc_action.h"
 
 std::unique_ptr<DecisionTreeNode> DistanceFromPath::getBranch()
@@ -8,14 +8,14 @@ std::unique_ptr<DecisionTreeNode> DistanceFromPath::getBranch()
 
 
     // debounce
-    if (now - enemyRef.lostAggroTime < enemyRef.aggroDelay) {
+    if (now - npcRef.lostAggroTime < npcRef.aggroDelay) {
         //std::cout << "Aggro on CD" << std::endl;
         return std::make_unique<FinalDecision<NpcAction>>(NpcAction::PATROL);
     }
 
-    if (enemyRef.getPathDistance() > distanceThreshold) {
+    if (npcRef.getPathRef().distanceToPath() > distanceThreshold) {
         //std::cout << "Patrol" << std::endl;
-        enemyRef.lostAggroTime = now;
+        npcRef.lostAggroTime = now;
         return std::make_unique<FinalDecision<NpcAction>>(NpcAction::PATROL);
     }
     else {

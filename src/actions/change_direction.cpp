@@ -2,7 +2,7 @@
 
 void ChangeDirection::execute()
 {
-	enemyRef.setColor(ORANGE);
-	enemyRef.getPathRef().nextPathPoint();
-	enemyRef.moveTo(enemyRef.getPatrolPoint());
+	npcRef.setColor(ORANGE);
+	npcRef.getPathRef().nextPathPoint();
+	npcRef.moveTo(npcRef.getPatrolPoint());
 }
