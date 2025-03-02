@@ -2,8 +2,7 @@
 #include "utils/is_close.h"
 #include "core/npc.h"
 
-Path::Path(Npc& npcRef) : npcRef(npcRef) {
-}
+Path::Path(Npc& npcRef) : npcRef(npcRef) {}
 
 bool Path::onPoint()
 {

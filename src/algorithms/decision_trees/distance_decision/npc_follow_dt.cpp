@@ -1,17 +1,16 @@
-﻿#include "decision_trees/distance_decision/npc_follow_dt.h"
+﻿#include "algorithms/decision_trees/distance_decision/npc_follow_dt.h"
 #include "decisions/decision_tree/final_decision.h"
 #include "actions/run.h"
 #include "actions/walk.h"
 #include "actions/stop.h"
+#include <iostream>
 
-
-NpcFollowDT::NpcFollowDT(Pawn& target):
-	Pawn(50.0f, 50.0f, 4.0f, 20.0f),
-	target(target)
+NpcFollowDT::NpcFollowDT(float x, float y, float speed, float radius, Pawn& targetRef, Color color) :
+	Npc(x, y, speed, radius, targetRef, color)
 {
 	// inicjalizacja unordered_map
-	npcActions[NpcAction::RUN] = std::make_unique<Run>(*this, target);
-	npcActions[NpcAction::WALK] = std::make_unique<Walk>(*this, target);
+	npcActions[NpcAction::RUN] = std::make_unique<Run>(*this, targetRef);
+	npcActions[NpcAction::WALK] = std::make_unique<Walk>(*this, targetRef);
 	npcActions[NpcAction::STOP] = std::make_unique<Stop>();
 }
 
@@ -27,8 +26,6 @@ void NpcFollowDT::draw()
 
 void NpcFollowDT::update()
 {
-	// aktualizuj odgległość
-	rootNode.setDistanceToTarget(Vector2Distance(getPosition(), target.getPosition()));
 	// podejmij decyzję
 	std::unique_ptr<DecisionTreeNode> decision = rootNode.makeDecision();
 	// wykonaj Akcję

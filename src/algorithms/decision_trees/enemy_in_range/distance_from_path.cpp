@@ -1,4 +1,4 @@
-#include "decision_trees/enemy_in_range/distance_from_path.h"
+#include "algorithms/decision_trees/enemy_in_range/distance_from_path.h"
 #include "decisions/decision_tree/final_decision.h"
 #include "utils/npc_action.h"
 

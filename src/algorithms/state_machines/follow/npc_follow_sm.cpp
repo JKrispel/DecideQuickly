@@ -3,17 +3,16 @@
 #include "actions/run.h"
 #include "actions/walk.h"
 #include "actions/stop.h"
-#include "state_machines/follow/transition_far_enough.h"
-#include "state_machines/follow/transition_close_enough.h"
+#include "algorithms/state_machines/follow/transition_far_enough.h"
+#include "algorithms/state_machines/follow/transition_close_enough.h"
 
 
-NpcFollowSM::NpcFollowSM(Pawn& target) : 
-	Pawn(50.0f, 50.0f, 4.0f, 20.0f),
-	target(target)
+NpcFollowSM::NpcFollowSM(float x, float y, float speed, float radius, Pawn& targetRef, Color color):
+Npc(x, y, speed, radius, targetRef, color)
 {
 	// inicjalizacja unordered_map
-	npcActions[NpcAction::RUN] = std::make_unique<Run>(*this, target);
-	npcActions[NpcAction::WALK] = std::make_unique<Walk>(*this, target);
+	npcActions[NpcAction::RUN] = std::make_unique<Run>(*this, targetRef);
+	npcActions[NpcAction::WALK] = std::make_unique<Walk>(*this, targetRef);
 	npcActions[NpcAction::STOP] = std::make_unique<Stop>();
 
 	// Stan "Stój w miejscu" (index: 0)
@@ -21,15 +20,15 @@ NpcFollowSM::NpcFollowSM(Pawn& target) :
 		static_cast<int>(NpcAction::STOP),  // state Action
 		static_cast<int>(NpcAction::STOP),  // entry 
 		static_cast<int>(NpcAction::STOP)); // exit
-	stateMachine->addTransition(0, std::make_unique<TransitionFarEnough>(60.0f, *this, target, 1, static_cast<int>(NpcAction::WALK)));
+	stateMachine->addTransition(0, std::make_unique<TransitionFarEnough>(60.0f, *this, targetRef, 1, static_cast<int>(NpcAction::WALK)));
 	// Stan "Idź za graczem" (index: 1)
 	stateMachine->addState(static_cast<int>(NpcAction::WALK), static_cast<int>(NpcAction::STOP), static_cast<int>(NpcAction::STOP));
-	stateMachine->addTransition(1, std::make_unique<TransitionCloseEnough>(60.0f, *this, target, 0, static_cast<int>(NpcAction::STOP)));
-	stateMachine->addTransition(1, std::make_unique<TransitionFarEnough>(200.0f, *this, target, 2, static_cast<int>(NpcAction::WALK)));
+	stateMachine->addTransition(1, std::make_unique<TransitionCloseEnough>(60.0f, *this, targetRef, 0, static_cast<int>(NpcAction::STOP)));
+	stateMachine->addTransition(1, std::make_unique<TransitionFarEnough>(200.0f, *this, targetRef, 2, static_cast<int>(NpcAction::WALK)));
 	// Stan "Biegnij za graczem" (index: 2)
 	stateMachine->addState(static_cast<int>(NpcAction::RUN), static_cast<int>(NpcAction::STOP), static_cast<int>(NpcAction::STOP));
-	stateMachine->addTransition(2, std::make_unique<TransitionCloseEnough>(60.0f, *this, target, 0, static_cast<int>(NpcAction::STOP)));
-	stateMachine->addTransition(2, std::make_unique<TransitionCloseEnough>(200.0f, *this, target, 1, static_cast<int>(NpcAction::STOP)));
+	stateMachine->addTransition(2, std::make_unique<TransitionCloseEnough>(60.0f, *this, targetRef, 0, static_cast<int>(NpcAction::STOP)));
+	stateMachine->addTransition(2, std::make_unique<TransitionCloseEnough>(200.0f, *this, targetRef, 1, static_cast<int>(NpcAction::STOP)));
 }
 
 void NpcFollowSM::update()
@@ -53,5 +52,5 @@ void NpcFollowSM::draw()
 	Vector2 position = getPosition();
 	DrawRectangle(position.x - 27.0f, position.y - 32.0f, 55.0f, 10.0f, BLACK);
 	DrawRectangle(position.x - 25.0f, position.y - 30.0f, 50.0f, 5.0f, GREEN);
-	DrawCircle(position.x, position.y, getHitboxRadius(), BLUE);
+	DrawCircle(position.x, position.y, getHitboxRadius(), getColor());
 }

@@ -9,8 +9,11 @@ class EnemyPatrolSM : public Npc {
 
 private:
 	std::unique_ptr<StateMachine> stateMachine;	// algorytm AI
-	std::unordered_map<NpcAction, std::unique_ptr<Action>> npcActions;
+	std::unordered_map<int, std::unique_ptr<Action>> npcActions;
 
 public:
-	EnemyPatrolSM(Pawn& targetRef);
+	EnemyPatrolSM(float x, float y, float speed, float radius, Pawn& targetRef, Color color = BLANK);
+
+	void update() override;
+	void draw() override;
 };

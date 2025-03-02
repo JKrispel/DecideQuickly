@@ -1,14 +1,14 @@
-﻿#include "decision_trees/enemy_in_range/enemy_patrol_dt.h"
+﻿#include "algorithms/decision_trees/enemy_in_range/enemy_patrol_dt.h"
 #include "decisions/decision_tree/final_decision.h"
 #include "raymath.h"
 #include "actions/chase.h"
 #include "actions/change_direction.h"
 #include "actions/patrol.h"
 
-EnemyPatrolDT::EnemyPatrolDT(Pawn& targetRef):
-	Npc(50.0f, 100.0f, 6.0f, 20.0f, targetRef),
+EnemyPatrolDT::EnemyPatrolDT(float x, float y, float speed, float radius, Pawn& targetRef, Color color) :
+	Npc(x, y, speed, radius, targetRef, color),
 	rootNode(std::make_unique<EnemyInRange>(*this))
-{	
+{
 	Path& pathPtr = getPathRef();
 	// patrolowana ścieżka:
 	pathPtr.addPoint(50.0f, 100.0f);

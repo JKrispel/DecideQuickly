@@ -1,9 +1,9 @@
 ﻿#pragma once
-#include "core/pawn.h"
-#include <raylib.h>
-#include <unordered_map>
-#include <decisions/action_manager/action.h>
-#include "decision_trees/enemy_in_range/enemy_in_range.h"
+#include "core/npc.h"
+#include "raylib.h"
+#include "unordered_map"
+#include "decisions/action_manager/action.h"
+#include "algorithms/decision_trees/enemy_in_range/enemy_in_range.h"
 #include "utils/npc_action.h"
 #include "utils/path.h"
 
@@ -21,7 +21,7 @@ public:
 	double lastDmgTime = 0.0;
 	const double dmgDelay = 0.5;  // dmg debounce
 
-	EnemyPatrolDT(Pawn& targetRef);
+	EnemyPatrolDT(float x, float y, float speed, float radius, Pawn& targetRef, Color color = BLANK);
 
 	void draw() override;
 	void update() override;

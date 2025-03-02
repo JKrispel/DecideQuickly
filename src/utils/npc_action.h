@@ -1,10 +1,11 @@
 ﻿#pragma once
-// Akcje dostępne dla AI
-enum class NpcAction {
+
+enum NpcAction {
     RUN,
     WALK,
     STOP,
     CHASE,
     CHANGE_DIRECTION,
     PATROL,
+    LOSE_PATIENCE
 };

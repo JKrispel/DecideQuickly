@@ -19,6 +19,11 @@ Pawn& Npc::getTargetRef()
 	return targetRef;
 }
 
+void Npc::moveToTarget()
+{
+	moveTo(targetRef.getPosition());
+}
+
 Path& Npc::getPathRef()
 {
 	return *pathPtr;
@@ -28,4 +33,31 @@ Vector2 Npc::getPatrolPoint()
 {
 	Vector2 point = pathPtr->getPointAtIndex(pathPtr->getCurrentIndex());
 	return point;
+}
+
+float Npc::getPatience()
+{
+	return patience;
+}
+
+void Npc::losePatience(float amount)
+{
+	if (patience < 0.0f) {
+
+		lostPatience = true;
+	}
+	else {
+		patience -= amount;
+	}
+}
+
+bool Npc::noPatience()
+{
+	return lostPatience;
+}
+
+void Npc::resetPatience()
+{
+	patience = 100.0f;
+	lostPatience = false;
 }
