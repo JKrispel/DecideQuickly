@@ -30,9 +30,11 @@ void Player::update()
 	double now = GetTime();  // czas w sekundach
 	bool canRegen = (now - regenTime) > regenDelay;
 
-	if (canRegen && (getHp() + regenAmount <= 100)) {
+	if (canRegen && getHp() < 100.0f) {
 		regenTime = now;
 		this->healPawn(regenAmount);
+		std::cout << "regen +" << regenAmount << std::endl;
+		std::cout << "regen reset: " << regenTime << std::endl;
 	}
 	Vector2 direction = Vector2Zero();
 	Vector2 position = getPosition();
@@ -59,6 +61,7 @@ void Player::dealDmg(int hpAmount)
 	Pawn::dealDmg(hpAmount); // funkcja klasy bazowej
 	double now = GetTime();  // czas w sekundach
 	regenTime = now;	// wydłużamy czas następnego leczenia
+	std::cout << "regen reset: " << regenTime<< std::endl;
 }
 
 bool Player::callForPause() const

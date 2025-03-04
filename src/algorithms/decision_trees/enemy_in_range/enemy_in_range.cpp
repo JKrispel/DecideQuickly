@@ -11,13 +11,6 @@ EnemyInRange::EnemyInRange(Npc& npcRef) : npcRef(npcRef) {}
 
 std::unique_ptr<DecisionTreeNode> EnemyInRange::getBranch()
 {
-    double now = GetTime();  // czas w sekundach
-    // debounce
-    if (now - npcRef.lostAggroTime < npcRef.aggroDelay) {
-
-        return std::make_unique<FinalDecision<NpcAction>>(NpcAction::PATROL);
-    }
-
     if (npcRef.distanceToTarget() < aggroThreshold) {
 
         return std::make_unique<DistanceFromPath>(npcRef);

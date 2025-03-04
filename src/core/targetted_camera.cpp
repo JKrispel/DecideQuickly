@@ -15,11 +15,11 @@ void TargettedCamera::updateCamera()
 
     if (IsKeyDown(KEY_UP) && camera.zoom < 6.0f) {
 
-        camera.zoom += 0.05;
+        camera.zoom += 0.1;
     }
     if (IsKeyDown(KEY_DOWN) && camera.zoom > 2.0f) {
 
-        camera.zoom -= 0.05;
+        camera.zoom -= 0.1;
     }
 }
 

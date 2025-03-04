@@ -6,7 +6,7 @@ bool TransitionNextPoint::isTriggered()
     double now = GetTime();  // czas w sekundach
 
     // debounce
-    if (now - npcRef.directionChangeTime < npcRef.debounceDelay) {
+    if (now - npcRef.directionChangeTime < npcRef.directionChangeDelay) {
 
         return false;
     }

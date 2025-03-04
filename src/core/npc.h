@@ -20,13 +20,14 @@ public:
 	Path& getPathRef();
 	Vector2 getPatrolPoint();
 	float getPatience();
-	void losePatience(float amount = 0.5f);
+	void losePatience(float amount = 1.0f);
 	bool noPatience();
 	void resetPatience();
+	void damageTarget();
 	// TODO przenieść do private
-	// pathing and aggro debounce:
-	double directionChangeTime = 0.0f;  // ostatnia Akcja CHANGE_DIRECTION
-	const double debounceDelay = 0.5f;  // debounce
-	double lostAggroTime = 0.0f;  // ostatnie stracenie aggro
-	double aggroDelay = 2.0f;	// cooldown dla CHASE
+	// debounce:
+	double directionChangeTime = 0.0f;  // ostatnia zmiana kierunku
+	const double directionChangeDelay = 0.5f;
+	double lastDmgTime{};	// ostatnie zadanie obrażeń
+	const double dmgDelay = 0.5;
 };

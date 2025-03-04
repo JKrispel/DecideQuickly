@@ -29,8 +29,8 @@ void NpcFollowDT::update()
 	// podejmij decyzję
 	std::unique_ptr<DecisionTreeNode> decision = rootNode.makeDecision();
 	// wykonaj Akcję
-	auto* finalDecision = dynamic_cast<FinalDecision<NpcAction>*>(decision.get());
-	NpcAction actionType = finalDecision->getActionType();
+	auto* finalDecision = dynamic_cast<FinalDecision*>(decision.get());
+	int actionType = finalDecision->getActionType();
 	npcActions[actionType]->execute();
 
 	updateFinished();

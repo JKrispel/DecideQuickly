@@ -2,6 +2,8 @@
 
 void LosePatience::execute()
 {
+	npcRef.setColor(ORANGE);
 	npcRef.losePatience();
 	npcRef.moveToTarget();
+	npcRef.damageTarget();
 }

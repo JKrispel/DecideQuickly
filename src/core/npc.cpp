@@ -61,3 +61,17 @@ void Npc::resetPatience()
 	patience = 100.0f;
 	lostPatience = false;
 }
+
+void Npc::damageTarget()
+{
+	// dmg debounce
+	double now = GetTime();  // czas w sekundach
+	bool canDmg = (now - lastDmgTime) > dmgDelay;
+	bool collision = CheckCollisionCircles(targetRef.getPosition(),
+		targetRef.getHitboxRadius(), this->getPosition(), getHitboxRadius());
+
+	if (collision && canDmg) {
+		lastDmgTime = now;
+		targetRef.dealDmg(10);
+	}
+}

@@ -4,4 +4,5 @@ void Chase::execute()
 {
 	npcRef.setColor(RED);
 	npcRef.moveToTarget();
+	npcRef.damageTarget();
 }

@@ -9,7 +9,13 @@ void Pawn::dealDmg(int hpAmount)
 
 void Pawn::healPawn(int hpAmount)
 {
-	hp += hpAmount;
+	if (hp + hpAmount > 100) {
+
+		hp = 100;
+	}
+	else {
+		hp += hpAmount;
+	}
 }
 
 int Pawn::getHp()

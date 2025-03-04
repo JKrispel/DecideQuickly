@@ -9,15 +9,15 @@ std::unique_ptr<DecisionTreeNode> OnPath::getBranch()
     double now = GetTime();  // czas w sekundach
      
     // debounce
-    if (now - npcRef.directionChangeTime < npcRef.debounceDelay) {
-        return std::make_unique<FinalDecision<NpcAction>>(NpcAction::PATROL);
+    if (now - npcRef.directionChangeTime < npcRef.directionChangeDelay) {
+        return std::make_unique<FinalDecision>(NpcAction::PATROL);
     }
     if (npcRef.getPathRef().onPoint()) {
 
         npcRef.directionChangeTime = now;
-        return std::make_unique<FinalDecision<NpcAction>>(NpcAction::CHANGE_DIRECTION);
+        return std::make_unique<FinalDecision>(NpcAction::CHANGE_DIRECTION);
     }
     else {
-        return std::make_unique<FinalDecision<NpcAction>>(NpcAction::PATROL);
+        return std::make_unique<FinalDecision>(NpcAction::PATROL);
     }
 }

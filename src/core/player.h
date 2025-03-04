@@ -13,9 +13,9 @@ private:
 	float leftLimit;
 	float rightLimit;
 	bool paused = false;
-	int regenAmount = 10;	// szybkość regeneracji
-	double regenTime = 0.0;
-	const double regenDelay = 0.5;  // dmg debounce
+	int regenAmount = 15;	// szybkość regeneracji
+	double regenTime{}; // ostatni regen
+	const double regenDelay = 1.0;  // regen debounce
 public:
 	Player();
 	void draw() override;

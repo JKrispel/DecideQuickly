@@ -4,14 +4,11 @@
 
 std::unique_ptr<DecisionTreeNode> DistanceFromPath::getBranch()
 {
+    if (npcRef.getPathRef().distanceToPath() < distanceThreshold) {
 
-    double now = GetTime();  // czas w sekundach
-
-    if (npcRef.getPathRef().distanceToPath() > distanceThreshold) {
-        npcRef.lostAggroTime = now;
-        return std::make_unique<FinalDecision<NpcAction>>(NpcAction::PATROL);
+        return std::make_unique<FinalDecision>(NpcAction::CHASE);
     }
     else {
-        return std::make_unique<FinalDecision<NpcAction>>(NpcAction::CHASE);
+        return std::make_unique<FinalDecision>(NpcAction::LOSE_PATIENCE);
     }
 }

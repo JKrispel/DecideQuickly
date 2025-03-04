@@ -15,7 +15,7 @@ std::unique_ptr<DecisionTreeNode> DistanceDecision::getBranch() {
     }
     else {
 
-        return std::make_unique<FinalDecision<NpcAction>>(NpcAction::RUN);
+        return std::make_unique<FinalDecision>(NpcAction::RUN);
     }
 }
 

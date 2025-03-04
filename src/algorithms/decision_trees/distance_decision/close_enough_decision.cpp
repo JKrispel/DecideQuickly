@@ -9,10 +9,10 @@ std::unique_ptr<DecisionTreeNode> CloseEnoughDecision::getBranch()
 
     if (distanceToTarget < stopThreshold) {
 
-        return std::make_unique<FinalDecision<NpcAction>>(NpcAction::STOP);
+        return std::make_unique<FinalDecision>(NpcAction::STOP);
     }
     else {
 
-        return std::make_unique<FinalDecision<NpcAction>>(NpcAction::WALK);
+        return std::make_unique<FinalDecision>(NpcAction::WALK);
     }
 }
