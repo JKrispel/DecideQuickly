@@ -6,6 +6,9 @@
 #include "algorithms/state_machines/follow/transition_far_enough.h"
 #include "algorithms/state_machines/follow/transition_close_enough.h"
 
+#include <iostream>
+#include <chrono>
+#include "utils/log_execution_time.h"
 
 NpcFollowSM::NpcFollowSM(float x, float y, float speed, float radius, Pawn& targetRef, Color color):
 Npc(x, y, speed, radius, targetRef, color)
@@ -33,8 +36,14 @@ Npc(x, y, speed, radius, targetRef, color)
 
 void NpcFollowSM::update()
 {
-	// Działanie Maszyny Stanów
-	std::unique_ptr<std::vector<int>> resultActions = stateMachine->update(); // Akcje wynikowe
+	std::string filename = "follow_sm_times.csv";
+	auto start = std::chrono::high_resolution_clock::now();
+
+	std::unique_ptr<std::vector<int>> resultActions = stateMachine->update();	// Działanie Maszyny Stanów
+
+	auto end = std::chrono::high_resolution_clock::now();
+	double execution_time = std::chrono::duration<double, std::milli>(end - start).count();
+	log_execution_time(execution_time, filename);
 
 	for (int actionIndex : *resultActions) {
 

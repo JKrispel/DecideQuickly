@@ -3,7 +3,10 @@
 #include "actions/run.h"
 #include "actions/walk.h"
 #include "actions/stop.h"
+
 #include <iostream>
+#include <chrono>
+#include "utils/log_execution_time.h"
 
 NpcFollowDT::NpcFollowDT(float x, float y, float speed, float radius, Pawn& targetRef, Color color) :
 	Npc(x, y, speed, radius, targetRef, color)
@@ -26,8 +29,14 @@ void NpcFollowDT::draw()
 
 void NpcFollowDT::update()
 {
-	// podejmij decyzję
+	std::string filename = "follow_dt_times.csv";
+	auto start = std::chrono::high_resolution_clock::now();
+
 	std::unique_ptr<DecisionTreeNode> decision = rootNode.makeDecision();
+
+	auto end = std::chrono::high_resolution_clock::now();
+	double execution_time = std::chrono::duration<double, std::milli>(end - start).count();
+	log_execution_time(execution_time, filename);
 	// wykonaj Akcję
 	auto* finalDecision = dynamic_cast<FinalDecision*>(decision.get());
 	int actionType = finalDecision->getActionType();

@@ -6,6 +6,10 @@
 #include "actions/patrol.h"
 #include "actions/lose_patience.h"
 
+#include <iostream>
+#include <chrono>
+#include "utils/log_execution_time.h"
+
 EnemyPatrolDT::EnemyPatrolDT(float x, float y, float speed, float radius, Pawn& targetRef, Color color) :
 	Npc(x, y, speed, radius, targetRef, color),
 	rootNode(std::make_unique<PatienceLeft>(*this))
@@ -38,19 +42,15 @@ void EnemyPatrolDT::draw()
 
 void EnemyPatrolDT::update()
 {
-	//Pawn& targetRef = getTargetRef();
-	//// dmg debounce
-	//double now = GetTime();  // czas w sekundach
-	//bool canDmg = (now - lastDmgTime) > dmgDelay;
-	//bool collision = CheckCollisionCircles(targetRef.getPosition(), 
-	//	targetRef.getHitboxRadius(), this->getPosition(), getHitboxRadius());
+	std::string filename = "patrol_dt_times.csv";
+	auto start = std::chrono::high_resolution_clock::now();
 
-	//if (collision  && canDmg) {
-	//	lastDmgTime = now;
-	//	targetRef.dealDmg(10);
-	//}
-	// podejmij decyzję
 	std::unique_ptr<DecisionTreeNode> decision = rootNode->makeDecision();
+
+	auto end = std::chrono::high_resolution_clock::now();
+	double execution_time = std::chrono::duration<double, std::milli>(end - start).count();
+	log_execution_time(execution_time, filename);
+
 	// wykonaj Akcję
 	auto* finalDecision = dynamic_cast<FinalDecision*>(decision.get());
 	int actionType = finalDecision->getActionType();

@@ -11,6 +11,10 @@
 #include "algorithms/state_machines/patrol/transition_in_range.h"
 #include "algorithms/state_machines/patrol/transition_no_patience.h"
 
+#include <iostream>
+#include <chrono>
+#include "utils/log_execution_time.h"
+
 EnemyPatrolSM::EnemyPatrolSM(float x, float y, float speed, float radius, Pawn& targetRef, Color color): 
 	Npc(x, y, speed, radius, targetRef, color)
 {
@@ -47,8 +51,15 @@ EnemyPatrolSM::EnemyPatrolSM(float x, float y, float speed, float radius, Pawn& 
 
 void EnemyPatrolSM::update()
 {
-	// Działanie Maszyny Stanów
-	std::unique_ptr<std::vector<int>> resultActions = stateMachine->update(); // Akcje wynikowe
+	std::string filename = "patrol_sm_times.csv";
+	auto start = std::chrono::high_resolution_clock::now();
+
+	std::unique_ptr<std::vector<int>> resultActions = stateMachine->update();	// Działanie Maszyny Stanów
+
+	auto end = std::chrono::high_resolution_clock::now();
+	double execution_time = std::chrono::duration<double, std::milli>(end - start).count();
+	log_execution_time(execution_time, filename);
+
 
 	for (int actionIndex : *resultActions) {
 

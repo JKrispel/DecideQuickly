@@ -1,5 +1,6 @@
 ﻿#include <thread>
 #include <set>
+#include <iostream>
 #include "raylib.h"
 #define RAYGUI_IMPLEMENTATION
 #include "raygui.h"
@@ -13,6 +14,8 @@
 #include "parallel/worker_thread.h"
 #include "render/floor.h"
 #include "core/config.h"
+
+#include "utils/calculate_stats.h"
 
 int main(void)
 {
@@ -55,7 +58,7 @@ int main(void)
         switch (active) {
         case -1: {
             GuiListView(Rectangle{ 0.f, static_cast<float>(GetScreenHeight()) / 16, static_cast<float>(GetScreenWidth()), static_cast<float>(GetScreenHeight()) },
-                "Follow - Drzewo Decyzyjne;Patrol - Drzewo Decyzyjne;Follow - Maszyna Stanow;Patrol - Maszyna Stanow;Coming Soon",
+                "Follow - Drzewo Decyzyjne;Patrol - Drzewo Decyzyjne;Follow - Maszyna Stanow;Patrol - Maszyna Stanow;Coming Soon;Wykonaj obliczenia statystyczne",
                 &scroll, &active);
             DrawRectangle(0.0f, 0.0f, static_cast<float>(GetScreenWidth()), static_cast<float>(GetScreenHeight()) / 16, SKYBLUE);
             GuiLabel(Rectangle{ 3.0f, 3.0f, static_cast<float>(GetScreenWidth()), static_cast<float>(GetScreenHeight()) / 16 },
@@ -100,11 +103,6 @@ int main(void)
         
         case 2: {   // Follow - Maszyna Stanów
 
-            if (initializedLevels.find(1) == initializedLevels.end()) {
-
-                // TODO załaduj assety
-                initializedLevels.insert(1);
-            }
             aiWorker.addTask([&]() { npcSMptr->update(); });
             BeginMode2D(gameCamera.getCameraRef());
             gameCamera.updateCamera();
@@ -127,7 +125,7 @@ int main(void)
             player.draw();
             enemySMptr->draw();
         } break;
-
+        
         case 4: {   // nowy algorytm (WIP)  
             BeginMode2D(gameCamera.getCameraRef());
             gameCamera.updateCamera();
@@ -136,6 +134,14 @@ int main(void)
             ClearBackground(BLACK);
             floor.draw();
             player.draw();
+        } break;
+
+        case 5: {   // obliczenia statystyczne
+        
+            std::string fileNames = "follow_dt_times.csv;patrol_dt_times.csv;follow_sm_times.csv;patrol_sm_times.csv";
+            calculate_stats(fileNames);
+            std::cout << "Obliczenia zakonczone!" << std::endl;      
+            active = -1;    // powrót do menu
         } break;
         default: {
             std::cout << "Nie wybrano opcji" << std::endl;
