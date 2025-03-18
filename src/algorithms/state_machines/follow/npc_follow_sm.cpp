@@ -6,7 +6,6 @@
 #include "algorithms/state_machines/follow/transition_far_enough.h"
 #include "algorithms/state_machines/follow/transition_close_enough.h"
 
-#include <iostream>
 #include <chrono>
 #include "utils/log_execution_time.h"
 
@@ -41,15 +40,15 @@ void NpcFollowSM::update()
 
 	std::unique_ptr<std::vector<int>> resultActions = stateMachine->update();	// Działanie Maszyny Stanów
 
-	auto end = std::chrono::high_resolution_clock::now();
-	double execution_time = std::chrono::duration<double, std::milli>(end - start).count();
-	log_execution_time(execution_time, filename);
-
 	for (int actionIndex : *resultActions) {
 
 		NpcAction action = static_cast<NpcAction>(actionIndex);
 		npcActions[action]->execute();
 	}	
+
+	auto end = std::chrono::high_resolution_clock::now();
+	double execution_time = std::chrono::duration<double, std::milli>(end - start).count();
+	logExecutionTime(execution_time, filename);
 
 	updateFinished();
 }

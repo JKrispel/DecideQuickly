@@ -47,14 +47,15 @@ void EnemyPatrolDT::update()
 
 	std::unique_ptr<DecisionTreeNode> decision = rootNode->makeDecision();
 
-	auto end = std::chrono::high_resolution_clock::now();
-	double execution_time = std::chrono::duration<double, std::milli>(end - start).count();
-	log_execution_time(execution_time, filename);
 
 	// wykonaj Akcję
 	auto* finalDecision = dynamic_cast<FinalDecision*>(decision.get());
 	int actionType = finalDecision->getActionType();
 	npcActions[actionType]->execute();
+
+	auto end = std::chrono::high_resolution_clock::now();
+	double execution_time = std::chrono::duration<double, std::milli>(end - start).count();
+	logExecutionTime(execution_time, filename);
 
 	updateFinished();
 }

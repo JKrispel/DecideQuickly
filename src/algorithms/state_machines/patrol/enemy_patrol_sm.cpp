@@ -56,15 +56,15 @@ void EnemyPatrolSM::update()
 
 	std::unique_ptr<std::vector<int>> resultActions = stateMachine->update();	// Działanie Maszyny Stanów
 
-	auto end = std::chrono::high_resolution_clock::now();
-	double execution_time = std::chrono::duration<double, std::milli>(end - start).count();
-	log_execution_time(execution_time, filename);
-
-
 	for (int actionIndex : *resultActions) {
 
 		npcActions[actionIndex]->execute();
 	}
+
+	auto end = std::chrono::high_resolution_clock::now();
+	double execution_time = std::chrono::duration<double, std::milli>(end - start).count();
+	logExecutionTime(execution_time, filename);
+
 	updateFinished();
 }
 

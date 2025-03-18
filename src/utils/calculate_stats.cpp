@@ -1,6 +1,6 @@
 ﻿#include "utils/calculate_stats.h"
 
-std::vector<std::string> split_filenames(const std::string& filenames) {
+static std::vector<std::string> splitFilenames(const std::string& filenames) {
     std::vector<std::string> result;
     std::stringstream ss(filenames);
     std::string token;
@@ -11,14 +11,14 @@ std::vector<std::string> split_filenames(const std::string& filenames) {
     return result;
 }
 
-double calculate_average_time(const std::string& filename) {
+static double calculateAverage(const std::string& filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
         std::cerr << "Blad przy otwieraniu pliku: " << filename << std::endl;
         return -1.0;
     }
 
-    std::vector<double> times;
+    std::vector<double> values;
     std::string line;
     int count = 0;
 
@@ -30,33 +30,35 @@ double calculate_average_time(const std::string& filename) {
             continue;
         }
 
-        times.push_back(time);
+        values.push_back(time);
         count++;
         if (count == 3600) break;  // 3600 próbek == 1 minuta gry w 60FPS
     }
     file.close();
 
-    if (times.size() < 3600) {
-        std::cerr << "Not enough samples in " << filename << " (only " << times.size() << " found)" << std::endl;
+    if (values.size() < 3600) {
+        std::cerr << "Not enough samples in " << filename << " (only " << values.size() << " found)" << std::endl;
         return -1.0;
     }
 
     double sum = 0.0;
-    for (double t : times) {
+    for (double t : values) {
         sum += t;
     }
 
-    return sum / times.size();
+    return sum / values.size();
 }
 
-void calculate_stats(const std::string& filenames) {
-    std::vector<std::string> file_list = split_filenames(filenames);
+void calculateStats(const std::string& filenames) {
+    std::vector<std::string> file_list = splitFilenames(filenames);
 
     for (const auto& filename : file_list) {
-        double avg_time = calculate_average_time(filename);
-        if (avg_time >= 0.0) {
+        double avg_value = calculateAverage(filename);
+        if (avg_value >= 0.0) {
+
+            std::string unit = (filename.rfind("memory", 0) == 0) ? " MB" : " ms";  // czy dotyczy pamięci
             std::cout << "Sredni czas wykonania dla " << filename << ": "
-                << std::fixed << std::setprecision(6) << avg_time << " ms" << std::endl;
+                << std::fixed << std::setprecision(6) << avg_value << unit << std::endl;
         }
         else {
             std::cout << "Nie udalo sie obliczyc dla " << filename << std::endl;

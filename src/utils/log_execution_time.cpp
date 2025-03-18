@@ -1,6 +1,9 @@
 #include "utils/log_execution_time.h"
+#include <fstream>
+#include <iostream>
+#include <chrono>
 
-void log_execution_time(double execution_time, const std::string& filename) {
+void logExecutionTime(double execution_time, const std::string& filename) {
     std::ofstream file(filename, std::ios::app);
     if (file.is_open()) {
         file << execution_time << "\n";

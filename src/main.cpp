@@ -1,6 +1,5 @@
 ﻿#include <thread>
 #include <set>
-#include <iostream>
 #include "raylib.h"
 #define RAYGUI_IMPLEMENTATION
 #include "raygui.h"
@@ -10,18 +9,15 @@
 #include "algorithms/state_machines/patrol/enemy_patrol_sm.h"
 #include "algorithms/state_machines/follow/npc_follow_sm.h"
 #include "core/targetted_camera.h"
-#include "utils/log_execution_time.h"
 #include "parallel/worker_thread.h"
 #include "render/floor.h"
 #include "core/config.h"
-
+#include "utils/log_execution_time.h"
+#include "utils/log_memory.h"
 #include "utils/calculate_stats.h"
 
 int main(void)
 {
-
-
-
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(1600, 900, "Decide Quickly");
     SetTargetFPS(60);
@@ -80,7 +76,8 @@ int main(void)
             ClearBackground(BLACK);
             floor.draw();
             player.draw();
-            npcDTptr->draw(); // in order to get to this point
+            npcDTptr->draw();
+            logMemory("memory_follow_dt.csv");
         } break;
 
         case 1: {   // Patrol - Drzewo Decyzyjne
@@ -99,6 +96,7 @@ int main(void)
             floor.draw();
             player.draw();
             enemyDTptr->draw();
+            logMemory("memory_patrol_dt.csv");
         } break;
         
         case 2: {   // Follow - Maszyna Stanów
@@ -112,6 +110,7 @@ int main(void)
             floor.draw();
             player.draw();
             npcSMptr->draw();
+            logMemory("memory_follow_sm.csv");
         } break;
 
         case 3: {   // Patrol - Maszyna Stanów
@@ -124,6 +123,7 @@ int main(void)
             floor.draw();
             player.draw();
             enemySMptr->draw();
+            logMemory("memory_patrol_sm.csv");
         } break;
         
         case 4: {   // nowy algorytm (WIP)  
@@ -138,8 +138,8 @@ int main(void)
 
         case 5: {   // obliczenia statystyczne
         
-            std::string fileNames = "follow_dt_times.csv;patrol_dt_times.csv;follow_sm_times.csv;patrol_sm_times.csv";
-            calculate_stats(fileNames);
+            std::string fileNames = "follow_dt_times.csv;patrol_dt_times.csv;follow_sm_times.csv;patrol_sm_times.csv;memory_follow_dt.csv;memory_patrol_dt.csv;memory_follow_sm.csv;memory_patrol_sm.csv";
+            calculateStats(fileNames);
             std::cout << "Obliczenia zakonczone!" << std::endl;      
             active = -1;    // powrót do menu
         } break;

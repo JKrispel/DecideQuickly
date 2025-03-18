@@ -5,4 +5,4 @@
 #include <sstream>
 #include <iomanip>
 
-void calculate_stats(const std::string& filenames);
+void calculateStats(const std::string& filenames);
