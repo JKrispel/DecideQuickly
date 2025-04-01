@@ -1,4 +1,4 @@
-﻿#include "algorithms/state_machines/patrol/enemy_patrol_sm.h"
+﻿#include "algorithms/state_machines/npcs/enemy_patrol_sm.h"
 #include "actions/chase.h"
 #include "actions/change_direction.h"
 #include "actions/patrol.h"
@@ -10,6 +10,10 @@
 #include "algorithms/state_machines/patrol/transition_path_distance.h"
 #include "algorithms/state_machines/patrol/transition_in_range.h"
 #include "algorithms/state_machines/patrol/transition_no_patience.h"
+
+#include <iostream>
+#include <chrono>
+#include "utils/log_execution_time.h"
 
 EnemyPatrolSM::EnemyPatrolSM(float x, float y, float speed, float radius, Pawn& targetRef, Color color): 
 	Npc(x, y, speed, radius, targetRef, color)
@@ -47,13 +51,20 @@ EnemyPatrolSM::EnemyPatrolSM(float x, float y, float speed, float radius, Pawn& 
 
 void EnemyPatrolSM::update()
 {
-	// Działanie Maszyny Stanów
-	std::unique_ptr<std::vector<int>> resultActions = stateMachine->update(); // Akcje wynikowe
+	std::string filename = "patrol_sm";
+	auto start = std::chrono::high_resolution_clock::now();
+
+	std::unique_ptr<std::vector<int>> resultActions = stateMachine->update();	// Działanie Maszyny Stanów
 
 	for (int actionIndex : *resultActions) {
 
 		npcActions[actionIndex]->execute();
 	}
+
+	auto end = std::chrono::high_resolution_clock::now();
+	double execution_time = std::chrono::duration<double, std::milli>(end - start).count();
+	logExecutionTime(execution_time, filename);
+
 	updateFinished();
 }
 

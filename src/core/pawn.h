@@ -19,6 +19,7 @@ private:
 public:
 	Pawn(float x, float y, float speed, float radius, Color color = BLANK)
 		: position{ x, y }, speed(speed), radius(radius), color(color) {}
+	virtual ~Pawn() = default;
 
 	virtual void draw() = 0;
 	virtual void update() = 0;

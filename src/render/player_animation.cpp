@@ -1,5 +1,14 @@
 #include "render/player_animation.h"
 
+PlayerAnimation::~PlayerAnimation()
+{
+	UnloadTexture(up);
+	UnloadTexture(left);
+	UnloadTexture(right);
+	UnloadTexture(down);
+	UnloadTexture(dead);
+}
+
 void PlayerAnimation::updateDirection(Vector2 newDirection)
 {
 	direction = newDirection;

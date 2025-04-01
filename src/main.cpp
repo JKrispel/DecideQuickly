@@ -4,37 +4,23 @@
 #define RAYGUI_IMPLEMENTATION
 #include "raygui.h"
 #include "core/player.h"
-#include "algorithms/decision_trees/distance_decision/npc_follow_dt.h"
-#include "algorithms/decision_trees/enemy_in_range/enemy_patrol_dt.h"
-#include "algorithms/state_machines/patrol/enemy_patrol_sm.h"
-#include "algorithms/state_machines/follow/npc_follow_sm.h"
 #include "core/targetted_camera.h"
-#include "utils/log_execution_time.h"
 #include "parallel/worker_thread.h"
-#include "render/floor.h"
 #include "core/config.h"
+#include "utils/log_execution_time.h"
+#include "utils/calculate_stats.h"
+#include "levels/follow_dt_level.h"
+#include "levels/patrol_dt_level.h"
+#include "levels/follow_sm_level.h"
+#include "levels/patrol_sm_level.h"
+#include "levels/crowd_follow_dt_level.h"
+
 
 int main(void)
 {
-
-
-
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(1600, 900, "Decide Quickly");
     SetTargetFPS(60);
-
-
-    Player player; 
-    TargettedCamera gameCamera = TargettedCamera(player);   // kamera gracza
-
-    // npc i enemy otrzymują jako target gracza
-    // Drzewa Decyzyjne
-    auto npcDTptr = std::make_unique<NpcFollowDT>(100.0f, 100.0f, 5.0f, 20.0f, player, GREEN);
-    auto enemyDTptr = std::make_unique<EnemyPatrolDT>(100.0f, 100.0f, 5.0f, 20.0f, player, ORANGE);
-
-    // Maszyny Stanów
-    auto npcSMptr = std::make_unique<NpcFollowSM>(100.0f, 100.0f, 5.0f, 20.0f, player, GREEN);
-    auto enemySMptr = std::make_unique<EnemyPatrolSM>(100.0f, 100.0f, 5.0f, 20.0f, player, ORANGE);
 
     // GUI config
     int scroll = 0;
@@ -43,19 +29,18 @@ int main(void)
     GuiSetStyle(DEFAULT, TEXT_SIZE, static_cast<int>(20 * guiScale));
     GuiSetStyle(DEFAULT, TEXT_SPACING, static_cast<int>(2 * guiScale));
 
-    WorkerThread aiWorker; // równoległy wątek
+    WorkerThread aiWorker; // równoległy wątek dla AI
     // TODO
-    // wybór w menu powinien czyścić stan gry, ładować na nowo potrzebne assety (structs)
+    // wybór w menu powinien czyścić stan gry, ładować na nowo potrzebne assety
     std::set<int> initializedLevels;
-    Floor floor("resources/floor/floor_tiles.png", screen_width, screen_height);
-    
+    std::unique_ptr<Level> activeLevel;
     while (!WindowShouldClose()) {
         BeginDrawing();
 
         switch (active) {
         case -1: {
             GuiListView(Rectangle{ 0.f, static_cast<float>(GetScreenHeight()) / 16, static_cast<float>(GetScreenWidth()), static_cast<float>(GetScreenHeight()) },
-                "Follow - Drzewo Decyzyjne;Patrol - Drzewo Decyzyjne;Follow - Maszyna Stanow;Patrol - Maszyna Stanow;Coming Soon",
+                "Follow - Drzewo Decyzyjne;Patrol - Drzewo Decyzyjne;Follow - Maszyna Stanow;Patrol - Maszyna Stanow;Coming Soon;Wykonaj obliczenia statystyczne",
                 &scroll, &active);
             DrawRectangle(0.0f, 0.0f, static_cast<float>(GetScreenWidth()), static_cast<float>(GetScreenHeight()) / 16, SKYBLUE);
             GuiLabel(Rectangle{ 3.0f, 3.0f, static_cast<float>(GetScreenWidth()), static_cast<float>(GetScreenHeight()) / 16 },
@@ -66,87 +51,95 @@ int main(void)
 
             if (initializedLevels.find(0) == initializedLevels.end()) { // nie znaleziono
 
-                // TODO załaduj assety
+                activeLevel = std::make_unique<FollowDTLevel>();
                 initializedLevels.insert(0); // oznacz jako załadowany
             }
-            aiWorker.addTask([&]() { npcDTptr->update(); });  // here the main thread needs to finish queueing
-            BeginMode2D(gameCamera.getCameraRef());
-            gameCamera.updateCamera();
-            player.update();
+
+            aiWorker.addTask([&]() { activeLevel->updateNpcs(); });
+            activeLevel->updatePlayer();
+            BeginMode2D(activeLevel->getCameraRef());
             // renderowanie
-            ClearBackground(BLACK);
-            floor.draw();
-            player.draw();
-            npcDTptr->draw(); // in order to get to this point
+            activeLevel->draw();
+
         } break;
 
         case 1: {   // Patrol - Drzewo Decyzyjne
 
             if (initializedLevels.find(1) == initializedLevels.end()) {
 
-                // TODO załaduj assety
+                activeLevel = std::make_unique<PatrolDTLevel>();
                 initializedLevels.insert(1);
             }
-            aiWorker.addTask([&]() { enemyDTptr->update(); });
-            BeginMode2D(gameCamera.getCameraRef());
-            gameCamera.updateCamera();
-            player.update();
-
-            ClearBackground(BLACK);
-            floor.draw();
-            player.draw();
-            enemyDTptr->draw();
+            aiWorker.addTask([&]() { activeLevel->updateNpcs(); });
+            activeLevel->updatePlayer();
+            BeginMode2D(activeLevel->getCameraRef());
+            // renderowanie
+            activeLevel->draw();
         } break;
         
         case 2: {   // Follow - Maszyna Stanów
 
-            if (initializedLevels.find(1) == initializedLevels.end()) {
+            if (initializedLevels.find(2) == initializedLevels.end()) {
 
-                // TODO załaduj assety
-                initializedLevels.insert(1);
+                activeLevel = std::make_unique<FollowSMLevel>();
+                initializedLevels.insert(2);
             }
-            aiWorker.addTask([&]() { npcSMptr->update(); });
-            BeginMode2D(gameCamera.getCameraRef());
-            gameCamera.updateCamera();
-            player.update();
-
-            ClearBackground(BLACK);
-            floor.draw();
-            player.draw();
-            npcSMptr->draw();
+            aiWorker.addTask([&]() { activeLevel->updateNpcs(); });
+            activeLevel->updatePlayer();
+            BeginMode2D(activeLevel->getCameraRef());
+            // renderowanie
+            activeLevel->draw();
         } break;
 
         case 3: {   // Patrol - Maszyna Stanów
-            aiWorker.addTask([&]() { enemySMptr->update(); });
-            BeginMode2D(gameCamera.getCameraRef());
-            gameCamera.updateCamera();
-            player.update();
 
-            ClearBackground(BLACK);
-            floor.draw();
-            player.draw();
-            enemySMptr->draw();
+            if (initializedLevels.find(3) == initializedLevels.end()) {
+
+                activeLevel = std::make_unique<PatrolSMLevel>();
+                initializedLevels.insert(3);
+            }
+            aiWorker.addTask([&]() { activeLevel->updateNpcs(); });
+            activeLevel->updatePlayer();
+            BeginMode2D(activeLevel->getCameraRef());
+            // renderowanie
+            activeLevel->draw();;
+        } break;
+        
+        case 4: {   // nowy algorytm (WIP)  
+
+            if (initializedLevels.find(4) == initializedLevels.end()) {
+
+                activeLevel = std::make_unique<CrowdFollowDTLevel>();
+                initializedLevels.insert(4);
+            }
+            aiWorker.addTask([&]() { activeLevel->updateNpcs(); });
+            activeLevel->updatePlayer();
+            BeginMode2D(activeLevel->getCameraRef());
+            // renderowanie
+            activeLevel->draw();
         } break;
 
-        case 4: {   // nowy algorytm (WIP)  
-            BeginMode2D(gameCamera.getCameraRef());
-            gameCamera.updateCamera();
-            player.update();
-
-            ClearBackground(BLACK);
-            floor.draw();
-            player.draw();
+        case 5: {   // obliczenia statystyczne
+        
+            std::string levelNames = "follow_dt_times;patrol_dt_times;follow_sm_times;patrol_sm_times";
+            calculateLevelAverage(levelNames);   // domyślnie dla 3 plików na poziom
+            std::cout << "Obliczenia zakonczone!" << std::endl;      
+            active = -1;    // powrót do menu
         } break;
         default: {
             std::cout << "Nie wybrano opcji" << std::endl;
         } break;
         }
         // obsługa żądania pauzy
-        if (player.callForPause()) {
-            active = -1;
-            player.clearPauseCall();
-            // TODO zniszcz wszystkie assety
-            initializedLevels.clear();
+        if (activeLevel) {
+            Player& playerRef = activeLevel->getPlayerRef();
+
+            if (playerRef.callForPause()) {
+                active = -1;
+                playerRef.clearPauseCall();
+                initializedLevels.clear();
+                activeLevel.reset();
+            }
         }
         EndDrawing();
     }

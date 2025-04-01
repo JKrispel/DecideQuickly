@@ -13,6 +13,7 @@ private:	// Pawn z obsługą ścieżek i cierpliwością
 
 public:
 	Npc(float x, float y, float speed, float radius, Pawn& targetRef, Color color = BLANK);
+	virtual ~Npc() = default;
 
 	float distanceToTarget();
 	Pawn& getTargetRef();

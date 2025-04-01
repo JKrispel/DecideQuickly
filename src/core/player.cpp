@@ -1,8 +1,7 @@
 ﻿#include "player.h"
-#include <raylib.h>
-#include <raymath.h>
-#include <iostream>
-#include <cmath>
+#include "raylib.h"
+#include "raymath.h"
+#include "cmath"
 
 Player::Player()
 	: Pawn(screen_width / 2, screen_height / 2, 7.0f, player_hitbox_radius),
@@ -33,8 +32,6 @@ void Player::update()
 	if (canRegen && getHp() < 100.0f) {
 		regenTime = now;
 		this->healPawn(regenAmount);
-		std::cout << "regen +" << regenAmount << std::endl;
-		std::cout << "regen reset: " << regenTime << std::endl;
 	}
 	Vector2 direction = Vector2Zero();
 	Vector2 position = getPosition();
@@ -61,7 +58,6 @@ void Player::dealDmg(int hpAmount)
 	Pawn::dealDmg(hpAmount); // funkcja klasy bazowej
 	double now = GetTime();  // czas w sekundach
 	regenTime = now;	// wydłużamy czas następnego leczenia
-	std::cout << "regen reset: " << regenTime<< std::endl;
 }
 
 bool Player::callForPause() const
