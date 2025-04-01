@@ -14,6 +14,7 @@ private:
 	Texture2D dead = LoadTexture("resources/player/player_dead.png");
 	
 public:
+	~PlayerAnimation();
 	void updateDirection(Vector2 newDirection);
 	void animate(Vector2 position);
 };

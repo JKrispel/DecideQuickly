@@ -13,6 +13,7 @@ private:
 
 public:
 	StateMachine(int initialStateAction, int entryAction, int exitAction);
+	~StateMachine() = default;
 
 	std::unique_ptr<std::vector<int>> update();	// przejście Maszyny
 	void addState(int additionalStateAction, int entryAction, int exitAction);	// dodaje dodatkowy Stan do Maszyny

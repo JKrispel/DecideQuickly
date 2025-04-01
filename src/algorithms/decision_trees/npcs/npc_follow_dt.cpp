@@ -1,4 +1,4 @@
-﻿#include "algorithms/decision_trees/distance_decision/npc_follow_dt.h"
+﻿#include "algorithms/decision_trees/npcs/npc_follow_dt.h"
 #include "decisions/decision_tree/final_decision.h"
 #include "actions/run.h"
 #include "actions/walk.h"
@@ -28,7 +28,7 @@ void NpcFollowDT::draw()
 
 void NpcFollowDT::update()
 {
-	std::string filename = "follow_dt_times.csv";
+	std::string levelName = "follow_dt";
 	auto start = std::chrono::high_resolution_clock::now();
 
 	std::unique_ptr<DecisionTreeNode> decision = rootNode.makeDecision();
@@ -40,7 +40,7 @@ void NpcFollowDT::update()
 
 	auto end = std::chrono::high_resolution_clock::now();
 	double execution_time = std::chrono::duration<double, std::milli>(end - start).count();
-	logExecutionTime(execution_time, filename);
+	logExecutionTime(execution_time, levelName);
 
 	updateFinished();
 }

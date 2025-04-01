@@ -1,4 +1,4 @@
-﻿#include "algorithms/state_machines/patrol/enemy_patrol_sm.h"
+﻿#include "algorithms/state_machines/npcs/enemy_patrol_sm.h"
 #include "actions/chase.h"
 #include "actions/change_direction.h"
 #include "actions/patrol.h"
@@ -51,7 +51,7 @@ EnemyPatrolSM::EnemyPatrolSM(float x, float y, float speed, float radius, Pawn& 
 
 void EnemyPatrolSM::update()
 {
-	std::string filename = "patrol_sm_times.csv";
+	std::string filename = "patrol_sm";
 	auto start = std::chrono::high_resolution_clock::now();
 
 	std::unique_ptr<std::vector<int>> resultActions = stateMachine->update();	// Działanie Maszyny Stanów

@@ -1,8 +1,5 @@
-#include <iostream>
-#include <fstream>
-#include <vector>
+#pragma once
 #include <string>
-#include <sstream>
-#include <iomanip>
 
-void calculateStats(const std::string& filenames);
+// Calculates average execution time from multiple log files for a given level
+void calculateLevelAverage(const std::string& levelNames, int minFiles = 3);

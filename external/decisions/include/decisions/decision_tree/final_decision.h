@@ -12,6 +12,7 @@ private:
 
 public:
     FinalDecision(int action) : actionType(action) {}
+    ~FinalDecision() = default;
 
     std::unique_ptr<DecisionTreeNode> makeDecision() override;
     int getActionType() const;

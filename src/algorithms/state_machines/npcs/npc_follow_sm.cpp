@@ -35,7 +35,7 @@ Npc(x, y, speed, radius, targetRef, color)
 
 void NpcFollowSM::update()
 {
-	std::string filename = "follow_sm_times.csv";
+	std::string filename = "follow_sm";
 	auto start = std::chrono::high_resolution_clock::now();
 
 	std::unique_ptr<std::vector<int>> resultActions = stateMachine->update();	// Działanie Maszyny Stanów

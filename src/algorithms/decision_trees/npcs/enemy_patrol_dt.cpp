@@ -1,4 +1,4 @@
-﻿#include "algorithms/decision_trees/enemy_in_range/enemy_patrol_dt.h"
+﻿#include "algorithms/decision_trees/npcs/enemy_patrol_dt.h"
 #include "decisions/decision_tree/final_decision.h"
 #include "raymath.h"
 #include "actions/chase.h"
@@ -42,7 +42,7 @@ void EnemyPatrolDT::draw()
 
 void EnemyPatrolDT::update()
 {
-	std::string filename = "patrol_dt_times.csv";
+	std::string filename = "patrol_dt";
 	auto start = std::chrono::high_resolution_clock::now();
 
 	std::unique_ptr<DecisionTreeNode> decision = rootNode->makeDecision();

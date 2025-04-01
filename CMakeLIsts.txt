@@ -35,6 +35,13 @@ file(GLOB_RECURSE HEADERS "src/*.h")
 # Define the executable
 add_executable(MyProject ${SOURCES} ${HEADERS})
 
+# Create logs directory inside build directory
+file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/logs")
+file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/logs/follow_dt_times")
+file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/logs/patrol_dt_times")
+file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/logs/follow_sm_times")
+file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/logs/patrol_sm_times")
+
 # Link Raylib and RayGUI
 set(RAYLIB_LIBS raylib)
 
