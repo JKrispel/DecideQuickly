@@ -5,15 +5,25 @@
 #include "actions/stop.h"
 
 #include <chrono>
-#include "utils/log_execution_time.h"
+#include "perfo/log_execution_time.h"
+#include <iostream>
+
 
 NpcFollowDT::NpcFollowDT(float x, float y, float speed, float radius, Pawn& targetRef, Color color) :
 	Npc(x, y, speed, radius, targetRef, color)
 {
+	/*std::string levelName = "follow_dt";
+	auto start = std::chrono::high_resolution_clock::now();*/
+
 	// inicjalizacja unordered_map
 	npcActions[NpcAction::RUN] = std::make_unique<Run>(*this, targetRef);
 	npcActions[NpcAction::WALK] = std::make_unique<Walk>(*this, targetRef);
 	npcActions[NpcAction::STOP] = std::make_unique<Stop>();
+
+	/*auto end = std::chrono::high_resolution_clock::now();
+	double execution_time = std::chrono::duration<double, std::milli>(end - start).count();
+	logExecutionTime(execution_time, levelName);*/
+	//std::cout << "init time saved!";
 }
 
 void NpcFollowDT::draw()
@@ -28,8 +38,6 @@ void NpcFollowDT::draw()
 
 void NpcFollowDT::update()
 {
-	std::string levelName = "follow_dt";
-	auto start = std::chrono::high_resolution_clock::now();
 
 	std::unique_ptr<DecisionTreeNode> decision = rootNode.makeDecision();
 
@@ -37,10 +45,6 @@ void NpcFollowDT::update()
 	auto* finalDecision = dynamic_cast<FinalDecision*>(decision.get());
 	int actionType = finalDecision->getActionType();
 	npcActions[actionType]->execute();
-
-	auto end = std::chrono::high_resolution_clock::now();
-	double execution_time = std::chrono::duration<double, std::milli>(end - start).count();
-	logExecutionTime(execution_time, levelName);
 
 	updateFinished();
 }

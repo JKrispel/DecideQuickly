@@ -7,11 +7,16 @@
 #include "algorithms/state_machines/follow/transition_close_enough.h"
 
 #include <chrono>
-#include "utils/log_execution_time.h"
+#include "perfo/log_execution_time.h"
+#include <iostream>
+
 
 NpcFollowSM::NpcFollowSM(float x, float y, float speed, float radius, Pawn& targetRef, Color color):
 Npc(x, y, speed, radius, targetRef, color)
 {
+	std::string filename = "follow_sm";
+	auto start = std::chrono::high_resolution_clock::now();
+
 	// inicjalizacja unordered_map
 	npcActions[NpcAction::RUN] = std::make_unique<Run>(*this, targetRef);
 	npcActions[NpcAction::WALK] = std::make_unique<Walk>(*this, targetRef);
@@ -31,12 +36,16 @@ Npc(x, y, speed, radius, targetRef, color)
 	stateMachine->addState(static_cast<int>(NpcAction::RUN), static_cast<int>(NpcAction::STOP), static_cast<int>(NpcAction::STOP));
 	stateMachine->addTransition(2, std::make_unique<TransitionCloseEnough>(60.0f, *this, targetRef, 0, static_cast<int>(NpcAction::STOP)));
 	stateMachine->addTransition(2, std::make_unique<TransitionCloseEnough>(200.0f, *this, targetRef, 1, static_cast<int>(NpcAction::STOP)));
+
+	auto end = std::chrono::high_resolution_clock::now();
+	double execution_time = std::chrono::duration<double, std::milli>(end - start).count();
+	logExecutionTime(execution_time, filename);
+	std::cout << "init time saved!";
 }
 
 void NpcFollowSM::update()
 {
-	std::string filename = "follow_sm";
-	auto start = std::chrono::high_resolution_clock::now();
+
 
 	std::unique_ptr<std::vector<int>> resultActions = stateMachine->update();	// Działanie Maszyny Stanów
 
@@ -46,9 +55,7 @@ void NpcFollowSM::update()
 		npcActions[action]->execute();
 	}	
 
-	auto end = std::chrono::high_resolution_clock::now();
-	double execution_time = std::chrono::duration<double, std::milli>(end - start).count();
-	logExecutionTime(execution_time, filename);
+
 
 	updateFinished();
 }
