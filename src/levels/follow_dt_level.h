@@ -5,8 +5,4 @@ class FollowDTLevel : public Level {
 
 public:
 	FollowDTLevel();
-
-	~FollowDTLevel() override {
-		std::cout << "Destroying FollowDTLevel" << std::endl;
-	}
 };

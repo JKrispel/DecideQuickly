@@ -6,15 +6,19 @@
 #include "actions/patrol.h"
 #include "actions/lose_patience.h"
 
-#include <iostream>
 #include <chrono>
-#include "utils/log_execution_time.h"
+#include "perfo/log_execution_time.h"
+#include <iostream>
+
 
 EnemyPatrolDT::EnemyPatrolDT(float x, float y, float speed, float radius, Pawn& targetRef, Color color) :
 	Npc(x, y, speed, radius, targetRef, color),
 	rootNode(std::make_unique<PatienceLeft>(*this))
 {
+	std::string filename = "patrol_dt";
+	auto start = std::chrono::high_resolution_clock::now();
 	Path& pathPtr = getPathRef();
+
 	// patrolowana ścieżka:
 	pathPtr.addPoint(50.0f, 100.0f);
 	pathPtr.addPoint(50.0f, 400.0f);
@@ -26,6 +30,11 @@ EnemyPatrolDT::EnemyPatrolDT(float x, float y, float speed, float radius, Pawn& 
 	npcActions[NpcAction::CHANGE_DIRECTION] = std::make_unique<ChangeDirection>(*this);
 	npcActions[NpcAction::PATROL] = std::make_unique<Patrol>(*this);
 	npcActions[NpcAction::LOSE_PATIENCE] = std::make_unique<LosePatience>(*this);
+
+	auto end = std::chrono::high_resolution_clock::now();
+	double execution_time = std::chrono::duration<double, std::milli>(end - start).count();
+	logExecutionTime(execution_time, filename);
+	std::cout << "init time saved!";
 }
 
 void EnemyPatrolDT::draw()
@@ -42,20 +51,13 @@ void EnemyPatrolDT::draw()
 
 void EnemyPatrolDT::update()
 {
-	std::string filename = "patrol_dt";
-	auto start = std::chrono::high_resolution_clock::now();
 
 	std::unique_ptr<DecisionTreeNode> decision = rootNode->makeDecision();
-
 
 	// wykonaj Akcję
 	auto* finalDecision = dynamic_cast<FinalDecision*>(decision.get());
 	int actionType = finalDecision->getActionType();
 	npcActions[actionType]->execute();
-
-	auto end = std::chrono::high_resolution_clock::now();
-	double execution_time = std::chrono::duration<double, std::milli>(end - start).count();
-	logExecutionTime(execution_time, filename);
 
 	updateFinished();
 }

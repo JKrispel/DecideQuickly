@@ -11,13 +11,16 @@
 #include "algorithms/state_machines/patrol/transition_in_range.h"
 #include "algorithms/state_machines/patrol/transition_no_patience.h"
 
-#include <iostream>
 #include <chrono>
-#include "utils/log_execution_time.h"
+#include "perfo/log_execution_time.h"
+#include <iostream>
+
 
 EnemyPatrolSM::EnemyPatrolSM(float x, float y, float speed, float radius, Pawn& targetRef, Color color): 
 	Npc(x, y, speed, radius, targetRef, color)
 {
+	std::string filename = "patrol_sm";
+	auto start = std::chrono::high_resolution_clock::now();
 	Path& pathPtr = getPathRef();
 	// patrolowana ścieżka:
 	pathPtr.addPoint(50.0f, 100.0f);
@@ -47,12 +50,14 @@ EnemyPatrolSM::EnemyPatrolSM(float x, float y, float speed, float radius, Pawn& 
 	stateMachine->addState(NpcAction::LOSE_PATIENCE, NpcAction::STOP, NpcAction::STOP);
 	stateMachine->addTransition(2, std::make_unique<TransitionInRange>(*this ,1, NpcAction::CHASE));
 	stateMachine->addTransition(2, std::make_unique<TransitionNoPatience>(*this, 0, static_cast<int>(NpcAction::LOSE_PATIENCE)));
+	auto end = std::chrono::high_resolution_clock::now();
+	double execution_time = std::chrono::duration<double, std::milli>(end - start).count();
+	logExecutionTime(execution_time, filename);
+	std::cout << "init time saved!";
 }
 
 void EnemyPatrolSM::update()
 {
-	std::string filename = "patrol_sm";
-	auto start = std::chrono::high_resolution_clock::now();
 
 	std::unique_ptr<std::vector<int>> resultActions = stateMachine->update();	// Działanie Maszyny Stanów
 
@@ -60,10 +65,6 @@ void EnemyPatrolSM::update()
 
 		npcActions[actionIndex]->execute();
 	}
-
-	auto end = std::chrono::high_resolution_clock::now();
-	double execution_time = std::chrono::duration<double, std::milli>(end - start).count();
-	logExecutionTime(execution_time, filename);
 
 	updateFinished();
 }
